@@ -1,5 +1,6 @@
 package graphql
 
+import graphql.execution.ExecutorServiceExecutionStrategy
 import graphql.language.SourceLocation
 import graphql.schema.GraphQLFieldDefinition
 import graphql.schema.GraphQLNonNull
@@ -7,6 +8,8 @@ import graphql.schema.GraphQLObjectType
 import graphql.schema.GraphQLSchema
 import graphql.validation.ValidationErrorType
 import spock.lang.Specification
+
+import java.util.concurrent.Executors
 
 import static graphql.Scalars.GraphQLString
 import static graphql.schema.GraphQLArgument.newArgument
@@ -36,6 +39,72 @@ class GraphQLTest extends Specification {
 
         then:
         result == [hello: 'world']
+
+    }
+
+    def "simple query executor service"() {
+        given:
+        GraphQLFieldDefinition fieldDefinition = newFieldDefinition()
+                .name("hello")
+                .type(GraphQLString)
+                .staticValue("world")
+                .build()
+        GraphQLSchema schema = newSchema().query(
+                newObject()
+                        .name("RootQueryType")
+                        .field(fieldDefinition)
+                        .build()
+        ).build()
+
+        when:
+        def result = new GraphQL(schema, new ExecutorServiceExecutionStrategy(Executors.newSingleThreadExecutor())).execute('{ hello }').data
+
+        then:
+        result == [hello: 'world']
+
+    }
+
+    def "simple introspection query"() {
+        given:
+        GraphQLFieldDefinition fieldDefinition = newFieldDefinition()
+                .name("hello")
+                .type(GraphQLString)
+                .staticValue("world")
+                .build()
+        GraphQLSchema schema = newSchema().query(
+                newObject()
+                        .name("RootQueryType")
+                        .field(fieldDefinition)
+                        .build()
+        ).build()
+
+        when:
+        def result = new GraphQL(schema).execute('{ __schema { queryType { name } }  }').data
+
+        then:
+        result == [__schema: [queryType:[name:'RootQueryType']]]
+
+    }
+
+    def "simple introspection query executor service"() {
+        given:
+        GraphQLFieldDefinition fieldDefinition = newFieldDefinition()
+                .name("hello")
+                .type(GraphQLString)
+                .staticValue("world")
+                .build()
+        GraphQLSchema schema = newSchema().query(
+                newObject()
+                        .name("RootQueryType")
+                        .field(fieldDefinition)
+                        .build()
+        ).build()
+
+        when:
+        def result = new GraphQL(schema, new ExecutorServiceExecutionStrategy(Executors.newSingleThreadExecutor())).execute('{ __schema { queryType { name } }  }').data
+
+        then:
+        result == [__schema: [queryType:[name:'RootQueryType']]]
 
     }
 
