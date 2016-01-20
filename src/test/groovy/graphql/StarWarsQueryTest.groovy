@@ -1,6 +1,8 @@
 package graphql
-
+import graphql.execution.ExecutorServiceExecutionStrategy
 import spock.lang.Specification
+
+import java.util.concurrent.Executors
 
 class StarWarsQueryTest extends Specification {
 
@@ -60,6 +62,82 @@ class StarWarsQueryTest extends Specification {
 
         when:
         def result = new GraphQL(StarWarsSchema.starWarsSchema).execute(query).data
+
+        then:
+        result == expected
+    }
+
+    def 'Allows us to query for the ID and friends of R2-D2 with executor service'() {
+        given:
+        def query = """
+        query HeroNameAndFriendsQuery {
+            hero {
+                id
+                name
+                friends {
+                    name
+                }
+            }
+        }
+        """
+        def expected = [
+                hero: [
+                        id     : '2001',
+                        name   : 'R2-D2',
+                        friends: [
+                                [
+                                        name: 'Luke Skywalker',
+                                ],
+                                [
+                                        name: 'Han Solo',
+                                ],
+                                [
+                                        name: 'Leia Organa',
+                                ],
+                        ]
+                ]
+        ]
+
+        when:
+        def result = new GraphQL(StarWarsSchema.starWarsSchema, new ExecutorServiceExecutionStrategy(Executors.newCachedThreadPool())).execute(query).data
+
+        then:
+        result == expected
+    }
+
+    def 'Allows us to query for the ID and friends of R2-D2 with executor service and max thread count < query depth level '() {
+        given:
+        def query = """
+        query HeroNameAndFriendsQuery {
+            hero {
+                id
+                name
+                friends {
+                    name
+                }
+            }
+        }
+        """
+        def expected = [
+                hero: [
+                        id     : '2001',
+                        name   : 'R2-D2',
+                        friends: [
+                                [
+                                        name: 'Luke Skywalker',
+                                ],
+                                [
+                                        name: 'Han Solo',
+                                ],
+                                [
+                                        name: 'Leia Organa',
+                                ],
+                        ]
+                ]
+        ]
+
+        when:
+        def result = new GraphQL(StarWarsSchema.starWarsSchema, new ExecutorServiceExecutionStrategy(Executors.newFixedThreadPool(2))).execute(query).data
 
         then:
         result == expected
