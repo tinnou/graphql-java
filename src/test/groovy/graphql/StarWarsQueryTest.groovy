@@ -1,8 +1,15 @@
 package graphql
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import graphql.execution.ExecutorServiceExecutionStrategy
 import spock.lang.Specification
 
+import java.util.concurrent.BlockingQueue
 import java.util.concurrent.Executors
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadFactory
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 class StarWarsQueryTest extends Specification {
 
@@ -138,6 +145,64 @@ class StarWarsQueryTest extends Specification {
 
         when:
         def result = new GraphQL(StarWarsSchema.starWarsSchema, new ExecutorServiceExecutionStrategy(Executors.newFixedThreadPool(2))).execute(query).data
+
+        then:
+        result == expected
+    }
+
+    def 'Allows us to query for the ID and friends of R2-D2 with executor service without a queue : doesn\'t hang'() {
+        given:
+        def query = """
+        query HeroNameAndFriendsQuery {
+            hero {
+                id
+                friends {
+                    name
+                }
+            }
+        }
+        """
+        def expected = [
+                hero: [
+                        id     : '2001',
+                        friends: [
+                                [
+                                        name: 'Luke Skywalker',
+                                ],
+                                [
+                                        name: 'Han Solo',
+                                ],
+                                [
+                                        name: 'Leia Organa',
+                                ],
+                        ]
+                ]
+        ]
+
+        when:
+        String nameFormat = "graphqlExecutorThread-%d";
+        final ThreadFactory threadFactory = new ThreadFactoryBuilder()
+                .setNameFormat(nameFormat)
+                .build();
+        //extend LinkedBlockingQueue to force offer() to return false always (no queue == no deadlocks)
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>() {
+            @Override
+            public boolean offer(Runnable e) {
+                /*
+                 * Do not use the queue. If all the threads are working, then the caller thread
+                 * should execute the code in its own thread. (serially)
+                 */
+                return false;
+            }
+        };
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+                2, /* core 2 thread only */
+                2, /* max 2 thread only */
+                30, TimeUnit.SECONDS,
+                queue, /* queue that always rejects tasks */
+                threadFactory,
+                new ThreadPoolExecutor.CallerRunsPolicy());
+        def result = new GraphQL(StarWarsSchema.starWarsSchema, new ExecutorServiceExecutionStrategy(threadPoolExecutor)).execute(query).data
 
         then:
         result == expected
