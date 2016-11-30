@@ -16,6 +16,7 @@ import java.util.Deque;
 public class GraphqlAntlrToLanguage extends GraphqlBaseVisitor<Void> {
 
     Document result;
+    ObjectValue valueObject;
 
     private enum ContextProperty {
         OperationDefinition,
@@ -102,6 +103,21 @@ public class GraphqlAntlrToLanguage extends GraphqlBaseVisitor<Void> {
         result = new Document();
         newNode(result, ctx);
         return super.visitDocument(ctx);
+    }
+
+    @Override
+    public Void visitObjectValue(GraphqlParser.ObjectValueContext ctx) {
+        if (valueObject == null) {
+            valueObject = new ObjectValue();
+            newNode(valueObject, ctx);
+        }
+
+        for (GraphqlParser.ObjectFieldContext objectFieldContext : ctx.objectField()) {
+            ObjectField objectField = new ObjectField(objectFieldContext.NAME().getText(), getValue(objectFieldContext.value()));
+            valueObject.getObjectFields().add(objectField);
+        }
+
+        return null;
     }
 
     @Override
