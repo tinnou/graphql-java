@@ -5,8 +5,11 @@ import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.idl.RuntimeWiring
 import graphql.schema.idl.TypeRuntimeWiring
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.Flowable
 import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.TestScheduler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import spock.lang.Specification
@@ -15,6 +18,8 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 
 class ConcurrencyLimit extends Specification {
+
+    TestScheduler testScheduler = new TestScheduler()
 
     /**
      * A query can result in N field resolution.
@@ -198,44 +203,66 @@ class ConcurrencyLimit extends Specification {
         int depth=0
         int drawPos=0
 
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "left=" + left +
-                    ", right=" + right +
-                    ", value='" + value + '\'' +
-                    ", level=" + level +
-                    '} \n';
-        }
+//        @Override
+//        public String toString() {
+//            return "Node{" +
+//                    "left=" + left +
+//                    ", right=" + right +
+//                    ", value='" + value + '\'' +
+//                    ", level=" + level +
+//                    '} \n';
+//        }
     }
 
     void traverseAndFetchValue(TreeNode root) {
 
-        Single<String> fetchedValue = fetchValue(root)
+        Observable<TreeNode> fetchedValue = fetchValue(root)
 
-        fetchedValue.subscribe({ fValue ->
-            root.actualFetchedValue = fValue
-
-            if (root.left != null) {
-                traverseAndFetchValue(root.left)
-            }
-
-            if (root.right != null) {
-                traverseAndFetchValue(root.right)
-            }
-        } as Consumer)
+        fetchedValue.subscribe({next ->
+            log.info("node: value: {}, level: {}", next.actualFetchedValue, next.level)
+        }, {error -> throw error}, {
+            log.info("Completed")
+        })
     }
 
 
+    Observable<TreeNode> fetchValue(TreeNode current) {
 
-    Single<String> fetchValue(TreeNode current) {
-        Single.defer {
-            Single.fromFuture(fetchValueFuture(current))
+        if (current == null) {
+            return null
+        }
+
+        Observable<TreeNode> obs = fetchOne(current)
+
+        if (current.left != null) {
+            obs = obs.mergeWith(fetchOne(current.left).flatMap({ it -> fetchValue(it) }))
+        }
+
+        if (current.right != null) {
+            obs = obs.mergeWith(fetchOne(current.right).flatMap({ it -> fetchValue(it) }))
+        }
+
+        return obs
+    }
+
+
+    Observable<TreeNode> fetchOne(TreeNode current) {
+        return Observable.defer {
+            Observable.fromFuture(fetchValueFuture(current)
+                    .thenApply({ value ->
+                        log.info("fetched Value c {}", value)
+                        current.actualFetchedValue = value
+                        return current
+                    }))
         }
     }
 
     CompletableFuture<String> fetchValueFuture(TreeNode current) {
-        return CompletableFuture.completedFuture("F" + current.value)
+        return CompletableFuture.supplyAsync({
+            Thread.sleep(100)
+            log.info("fetched Value {}", "F" + current.value )
+            return "F" + current.value
+        })
     }
 
 
