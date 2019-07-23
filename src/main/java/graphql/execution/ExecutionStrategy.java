@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static graphql.execution.Async.exceptionallyCompletedFuture;
 import static graphql.execution.ExecutionStepInfo.newExecutionStepInfo;
@@ -112,6 +113,8 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 @SuppressWarnings("FutureReturnValueIgnored")
 public abstract class ExecutionStrategy {
 
+    protected final AtomicInteger currentConcurrency = new AtomicInteger(0);
+    protected final int maxConcurrency = 5;
     private static final Logger log = LoggerFactory.getLogger(ExecutionStrategy.class);
 
     protected final ValuesResolver valuesResolver = new ValuesResolver();
@@ -195,6 +198,9 @@ public abstract class ExecutionStrategy {
                 new InstrumentationFieldParameters(executionContext, fieldDef, createExecutionStepInfo(executionContext, parameters, fieldDef, null))
         );
 
+        // if currentConcurrency < maxConcurrency
+        // then do
+        // else block for 100ms
         CompletableFuture<FetchedValue> fetchFieldFuture = fetchField(executionContext, parameters);
         CompletableFuture<FieldValueInfo> result = fetchFieldFuture.thenApply((fetchedValue) ->
                 completeField(executionContext, parameters, fetchedValue));
