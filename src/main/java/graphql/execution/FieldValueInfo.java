@@ -2,6 +2,7 @@ package graphql.execution;
 
 import graphql.ExecutionResult;
 import graphql.PublicApi;
+import io.reactivex.Single;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,14 @@ public class FieldValueInfo {
 
     private final CompleteValueType completeValueType;
     private final CompletableFuture<ExecutionResult> fieldValue;
+    private final Single<ExecutionResult> fieldValueSingle;
     private final List<FieldValueInfo> fieldValueInfos;
 
-    private FieldValueInfo(CompleteValueType completeValueType, CompletableFuture<ExecutionResult> fieldValue, List<FieldValueInfo> fieldValueInfos) {
+    private FieldValueInfo(CompleteValueType completeValueType, CompletableFuture<ExecutionResult> fieldValue, Single<ExecutionResult> fieldValueSingle, List<FieldValueInfo> fieldValueInfos) {
         assertNotNull(fieldValueInfos, "fieldValueInfos can't be null");
         this.completeValueType = completeValueType;
         this.fieldValue = fieldValue;
+        this.fieldValueSingle = fieldValueSingle;
         this.fieldValueInfos = fieldValueInfos;
     }
 
@@ -38,6 +41,10 @@ public class FieldValueInfo {
 
     public CompletableFuture<ExecutionResult> getFieldValue() {
         return fieldValue;
+    }
+
+    public Single<ExecutionResult> getFieldValueSingle() {
+        return fieldValueSingle;
     }
 
     public List<FieldValueInfo> getFieldValueInfos() {
@@ -61,6 +68,8 @@ public class FieldValueInfo {
     public static class Builder {
         private CompleteValueType completeValueType;
         private CompletableFuture<ExecutionResult> executionResultFuture;
+        private Single<ExecutionResult> fieldValueSingle;
+
         private List<FieldValueInfo> listInfos = new ArrayList<>();
 
         public Builder(CompleteValueType completeValueType) {
@@ -77,6 +86,11 @@ public class FieldValueInfo {
             return this;
         }
 
+        public Builder fieldValueSingle(Single<ExecutionResult> fieldValueSingle) {
+            this.fieldValueSingle = fieldValueSingle;
+            return this;
+        }
+
         public Builder fieldValueInfos(List<FieldValueInfo> listInfos) {
             assertNotNull(listInfos, "fieldValueInfos can't be null");
             this.listInfos = listInfos;
@@ -84,7 +98,7 @@ public class FieldValueInfo {
         }
 
         public FieldValueInfo build() {
-            return new FieldValueInfo(completeValueType, executionResultFuture, listInfos);
+            return new FieldValueInfo(completeValueType, executionResultFuture, fieldValueSingle, listInfos);
         }
     }
 }

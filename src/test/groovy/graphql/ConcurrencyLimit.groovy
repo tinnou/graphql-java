@@ -1,6 +1,7 @@
 package graphql
 
-
+import graphql.execution.Async
+import graphql.execution.instrumentation.SimpleInstrumentation
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.idl.RuntimeWiring
@@ -12,6 +13,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.internal.operators.flowable.FlowableSingle
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.TestScheduler
+import org.apache.commons.lang3.concurrent.BasicThreadFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import spock.lang.Specification
@@ -69,7 +71,8 @@ class ConcurrencyLimit extends Specification {
             }
         """
 
-    def executor = Executors.newFixedThreadPool(100)
+    def executor = Executors.newFixedThreadPool(100, new BasicThreadFactory.Builder()
+            .namingPattern("datafetcher-get-pool-%s").build())
 
     def "test list of lists"() {
         def postsDf = new DataFetcher() {
@@ -107,10 +110,11 @@ class ConcurrencyLimit extends Specification {
                 .build()
         def schema = TestUtil.schema(schema, runtimeWiring)
 
-        def graphql = GraphQL.newGraphQL(schema).build()
+        def graphql = GraphQL.newGraphQL(schema)
+                .instrumentation(SimpleInstrumentation.INSTANCE).build()
 
         when:
-        def times = 100
+        def times = 50
         def input = ExecutionInput.newExecutionInput()
                 .query("""
                         query {
@@ -121,15 +125,28 @@ class ConcurrencyLimit extends Specification {
                         }
                         """)
                 .build()
-        def executionResult = graphql.execute(input)
+        def executionResultAsync = graphql.executeAsync(input)
+        def executionResultAsync2 = graphql.executeAsync(input)
+        def executionResultAsync3 = graphql.executeAsync(input)
+
         def authorIds = []
         for (def it = 1; it <= times; it++) {
             authorIds.add("author$it")
         }
 
+        def future = Async.each(Arrays.asList(executionResultAsync, executionResultAsync2, executionResultAsync3)).get()
+        def executionResult = future.get(0)
+        def executionResult2 = future.get(1)
+        def executionResult3 = future.get(2)
+
+
         then:
         executionResult.errors.isEmpty()
         executionResult.data.posts.author == authorIds
+        executionResult2.errors.isEmpty()
+        executionResult2.data.posts.author == authorIds
+        executionResult3.errors.isEmpty()
+        executionResult3.data.posts.author == authorIds
     }
 
 //    def "rxjava : defer() makes the completable future call a cold observable"() {
@@ -167,28 +184,44 @@ class ConcurrencyLimit extends Specification {
     def "backpressure example with simple iterable"() {
 
         List<Integer> l = (1..100).toList()
-        Flowable<Integer> obs = Flowable.fromIterable(l)
 
+        def exec = Executors.newFixedThreadPool(4)
         when:
         // Below works as well as flowable but is a little less readable.
+//        Observable<Integer> obs = Observable.fromIterable(l)
+//        Observable<Integer> obs2 = Observable.fromIterable(l)
 //        def otherObs = obs
 //                .flatMap({ i ->
-//                    Observable.defer({ Observable.fromFuture(fetchValueFuture(i)) })
-//                            .subscribeOn(Schedulers.from(cachedThreadPool))
-//                }, false, 5)
+//                    Observable.defer({ Observable.fromFuture(fetchValueFuture(i), Schedulers.from(exec)) })
+//                }, false, 3)
 //                .doAfterNext({ string -> log.info("string fetchedValue {}", string) } )
+//
+//        def otherObs2 = obs2
+//                .flatMap({ i ->
+//                    Observable.defer({ Observable.fromFuture(fetchValueFuture(i), Schedulers.from(exec)) })
+//
+//                }, false, 3)
+//                .doAfterNext({ string -> log.info("string fetchedValue 2 {}", string) } )
 
+        Flowable<Integer> obs = Flowable.fromIterable(l)
+        Flowable<Integer> obs2 = Flowable.fromIterable(l)
         def otherObs = obs
-                .parallel(5)
-                .runOn(Schedulers.io())
-                .flatMap({ i -> FlowableSingle.fromFuture(fetchValueFuture(i)) })
+                .parallel(3)
+                .flatMap({ i -> FlowableSingle.fromFuture(fetchValueFuture(i), Schedulers.from(exec)) }, false,1)
                 .doAfterNext({ string -> log.info("string fetchedValue {}", string) } )
                 .sequential()
 
+        def otherObs2 = obs2
+                .parallel(3)
+                .flatMap({ i -> FlowableSingle.fromFuture(fetchValueFuture(i), Schedulers.from(exec)) }, false,1)
+                .doAfterNext({ string -> log.info("string fetchedValue 2 {}", string) } )
+                .sequential()
+
         log.info("About to sleep once")
-        TimeUnit.SECONDS.sleep(5)
+        TimeUnit.SECONDS.sleep(2)
         log.info("About to subscribe")
         otherObs.subscribe()
+        otherObs2.subscribe()
         Thread.sleep(100_000)
 
         then:
@@ -308,7 +341,7 @@ class ConcurrencyLimit extends Specification {
     CompletableFuture<String> fetchValueFuture(Integer current) {
         return CompletableFuture.supplyAsync({
             log.info("Sleeping...")
-            Thread.sleep(randInt(1000,5000))
+            Thread.sleep(randInt(1000,1001))
             return "F" + current
         }, executor)
     }

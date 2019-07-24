@@ -1,5 +1,6 @@
 package graphql.execution;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import graphql.ExecutionResult;
 import graphql.ExecutionResultImpl;
 import graphql.GraphQLError;
@@ -32,17 +33,23 @@ import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
 import graphql.util.FpKit;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.operators.flowable.FlowableSingle;
+import io.reactivex.internal.schedulers.RxThreadFactory;
+import io.reactivex.schedulers.Schedulers;
+import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static graphql.execution.Async.exceptionallyCompletedFuture;
 import static graphql.execution.ExecutionStepInfo.newExecutionStepInfo;
@@ -123,6 +130,8 @@ public abstract class ExecutionStrategy {
     private final ResolveType resolvedType = new ResolveType();
 
     protected final DataFetcherExceptionHandler dataFetcherExceptionHandler;
+
+    private final Executor executor = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("exec-strategy-pool-%s").build());
 
     /**
      * The default execution strategy constructor uses the {@link SimpleDataFetcherExceptionHandler}
@@ -420,19 +429,24 @@ public abstract class ExecutionStrategy {
         ExecutionStepInfo executionStepInfo = parameters.getExecutionStepInfo();
         Object result = UnboxPossibleOptional.unboxPossibleOptional(parameters.getSource());
         GraphQLType fieldType = executionStepInfo.getUnwrappedNonNullType();
+
+        Single<ExecutionResult> fieldValueSingle;
         CompletableFuture<ExecutionResult> fieldValue;
 
         if (result == null) {
+            fieldValueSingle = Single.fromFuture(completeValueForNull(parameters), Schedulers.from(executor));
             fieldValue = completeValueForNull(parameters);
-            return FieldValueInfo.newFieldValueInfo(NULL).fieldValue(fieldValue).build();
+            return FieldValueInfo.newFieldValueInfo(NULL).fieldValue(fieldValue).fieldValueSingle(fieldValueSingle).build();
         } else if (isList(fieldType)) {
             return completeValueForList(executionContext, parameters, result);
         } else if (fieldType instanceof GraphQLScalarType) {
+            fieldValueSingle = Single.fromFuture(completeValueForScalar(executionContext, parameters, (GraphQLScalarType) fieldType, result), Schedulers.from(executor));
             fieldValue = completeValueForScalar(executionContext, parameters, (GraphQLScalarType) fieldType, result);
-            return FieldValueInfo.newFieldValueInfo(SCALAR).fieldValue(fieldValue).build();
+            return FieldValueInfo.newFieldValueInfo(SCALAR).fieldValue(fieldValue).fieldValueSingle(fieldValueSingle).build();
         } else if (fieldType instanceof GraphQLEnumType) {
+            fieldValueSingle = Single.fromFuture(completeValueForEnum(executionContext, parameters, (GraphQLEnumType) fieldType, result), Schedulers.from(executor));
             fieldValue = completeValueForEnum(executionContext, parameters, (GraphQLEnumType) fieldType, result);
-            return FieldValueInfo.newFieldValueInfo(ENUM).fieldValue(fieldValue).build();
+            return FieldValueInfo.newFieldValueInfo(ENUM).fieldValue(fieldValue).fieldValueSingle(fieldValueSingle).build();
         }
 
         // when we are here, we have a complex type: Interface, Union or Object
@@ -441,7 +455,8 @@ public abstract class ExecutionStrategy {
         GraphQLObjectType resolvedObjectType;
         try {
             resolvedObjectType = resolveType(executionContext, parameters, fieldType);
-            fieldValue = completeValueForObject(executionContext, parameters, resolvedObjectType, result);
+            fieldValueSingle = Single.fromFuture(completeValueForObject(executionContext, parameters, resolvedObjectType, result), Schedulers.from(executor));
+            fieldValue = new DummyObservableCompletableFuture<>(fieldValueSingle);
         } catch (UnresolvedTypeException ex) {
             // consider the result to be null and add the error on the context
             handleUnresolvedTypeProblem(executionContext, parameters, ex);
@@ -449,8 +464,9 @@ public abstract class ExecutionStrategy {
             parameters.getNonNullFieldValidator().validate(parameters.getPath(), null);
             // complete the field as null
             fieldValue = completedFuture(new ExecutionResultImpl(null, null));
+            fieldValueSingle = Single.just(new ExecutionResultImpl(null, null));
         }
-        return FieldValueInfo.newFieldValueInfo(OBJECT).fieldValue(fieldValue).build();
+        return FieldValueInfo.newFieldValueInfo(OBJECT).fieldValue(fieldValue).fieldValueSingle(fieldValueSingle).build();
     }
 
     private void handleUnresolvedTypeProblem(ExecutionContext context, ExecutionStrategyParameters parameters, UnresolvedTypeException e) {
@@ -483,10 +499,16 @@ public abstract class ExecutionStrategy {
         try {
             resultIterable = parameters.getNonNullFieldValidator().validate(parameters.getPath(), resultIterable);
         } catch (NonNullableFieldWasNullException e) {
-            return FieldValueInfo.newFieldValueInfo(LIST).fieldValue(exceptionallyCompletedFuture(e)).build();
+            return FieldValueInfo.newFieldValueInfo(LIST)
+                    .fieldValue(exceptionallyCompletedFuture(e))
+                    .fieldValueSingle(Single.error(e))
+                    .build();
         }
         if (resultIterable == null) {
-            return FieldValueInfo.newFieldValueInfo(LIST).fieldValue(completedFuture(new ExecutionResultImpl(null, null))).build();
+            return FieldValueInfo.newFieldValueInfo(LIST)
+                    .fieldValue(completedFuture(new ExecutionResultImpl(null, null)))
+                    .fieldValueSingle(Single.just(new ExecutionResultImpl(null, null)))
+                    .build();
         }
         return completeValueForList(executionContext, parameters, resultIterable);
     }
@@ -503,7 +525,7 @@ public abstract class ExecutionStrategy {
      */
     protected FieldValueInfo completeValueForList(ExecutionContext executionContext, ExecutionStrategyParameters parameters, Iterable<Object> iterableValues) {
 
-        Collection<Object> values = FpKit.toCollection(iterableValues);
+        List<Object> values = new ArrayList<>(FpKit.toCollection(iterableValues));
         ExecutionStepInfo executionStepInfo = parameters.getExecutionStepInfo();
         GraphQLFieldDefinition fieldDef = parameters.getExecutionStepInfo().getFieldDefinition();
         GraphQLObjectType fieldContainer = parameters.getExecutionStepInfo().getFieldContainer();
@@ -516,31 +538,73 @@ public abstract class ExecutionStrategy {
         );
 
         List<FieldValueInfo> fieldValueInfos = new ArrayList<>();
-        int index = 0;
-        for (Object item : values) {
-            ExecutionPath indexedPath = parameters.getPath().segment(index);
 
-            ExecutionStepInfo stepInfoForListElement = executionStepInfoFactory.newExecutionStepInfoForListElement(executionStepInfo, index);
+        List<Map.Entry<Integer, Object>> indexedValues = IntStream.range(0, values.size())
+                .mapToObj(i -> new AbstractMap.SimpleEntry<>(i, values.get(i)))
+                .collect(Collectors.toList());
 
-            NonNullableFieldValidator nonNullableFieldValidator = new NonNullableFieldValidator(executionContext, stepInfoForListElement);
+        Flowable<Map.Entry<Integer, Object>> flowableOfValues = FlowableSingle.fromIterable(indexedValues);
 
-            int finalIndex = index;
-            FetchedValue value = unboxPossibleDataFetcherResult(executionContext, parameters, item);
+        Flowable<AbstractMap.SimpleEntry<Integer, ExecutionResult>> fieldValueInfoFlowable = flowableOfValues.parallel(3)
+                .flatMap(entry -> {
+                    int index = entry.getKey();
+                    Object item = entry.getValue();
+                    ExecutionPath indexedPath = parameters.getPath().segment(index);
 
-            ExecutionStrategyParameters newParameters = parameters.transform(builder ->
-                    builder.executionStepInfo(stepInfoForListElement)
-                            .nonNullFieldValidator(nonNullableFieldValidator)
-                            .listSize(values.size())
-                            .localContext(value.getLocalContext())
-                            .currentListIndex(finalIndex)
-                            .path(indexedPath)
-                            .source(value.getFetchedValue())
-            );
-            fieldValueInfos.add(completeValue(executionContext, newParameters));
-            index++;
-        }
+                    ExecutionStepInfo stepInfoForListElement = executionStepInfoFactory.newExecutionStepInfoForListElement(executionStepInfo, index);
 
-        CompletableFuture<List<ExecutionResult>> resultsFuture = Async.each(fieldValueInfos, (item, i) -> item.getFieldValue());
+                    NonNullableFieldValidator nonNullableFieldValidator = new NonNullableFieldValidator(executionContext, stepInfoForListElement);
+
+                    FetchedValue value = unboxPossibleDataFetcherResult(executionContext, parameters, item);
+
+                    ExecutionStrategyParameters newParameters = parameters.transform(builder ->
+                            builder.executionStepInfo(stepInfoForListElement)
+                                    .nonNullFieldValidator(nonNullableFieldValidator)
+                                    .listSize(values.size())
+                                    .localContext(value.getLocalContext())
+                                    .currentListIndex(index)
+                                    .path(indexedPath)
+                                    .source(value.getFetchedValue())
+                    );
+                    FieldValueInfo fieldValueInfo = completeValue(executionContext, newParameters);
+                    return fieldValueInfo.getFieldValueSingle().map(ex -> {
+                        return new AbstractMap.SimpleEntry<>(index, ex);
+                    }).toFlowable();
+                }, false, 1)
+                .doAfterNext(entry -> { log.info("string fetchedValue {}", entry.getValue().getData().toString()); } )
+                .sequential();
+
+
+
+//        int index = 0;
+//        for (Object item : values) {
+//            ExecutionPath indexedPath = parameters.getPath().segment(index);
+//
+//            ExecutionStepInfo stepInfoForListElement = executionStepInfoFactory.newExecutionStepInfoForListElement(executionStepInfo, index);
+//
+//            NonNullableFieldValidator nonNullableFieldValidator = new NonNullableFieldValidator(executionContext, stepInfoForListElement);
+//
+//            int finalIndex = index;
+//            FetchedValue value = unboxPossibleDataFetcherResult(executionContext, parameters, item);
+//
+//            ExecutionStrategyParameters newParameters = parameters.transform(builder ->
+//                    builder.executionStepInfo(stepInfoForListElement)
+//                            .nonNullFieldValidator(nonNullableFieldValidator)
+//                            .listSize(values.size())
+//                            .localContext(value.getLocalContext())
+//                            .currentListIndex(finalIndex)
+//                            .path(indexedPath)
+//                            .source(value.getFetchedValue())
+//            );
+//            fieldValueInfos.add(completeValue(executionContext, newParameters));
+//            index++;
+//        }
+
+        CompletableFuture<List<ExecutionResult>> resultsFuture = new ObservableCompletableFuture<>(fieldValueInfoFlowable.toSortedList(Comparator.comparingInt(Map.Entry::getKey))
+                .map(simpleEntries -> simpleEntries.stream().map(AbstractMap.SimpleEntry::getValue).collect(Collectors.toList())));
+
+
+//        CompletableFuture<List<ExecutionResult>> resultsFuture = Async.each(fieldValueInfos, (item, i) -> item.getFieldValue());
 
         CompletableFuture<ExecutionResult> overallResult = new CompletableFuture<>();
         completeListCtx.onDispatched(overallResult);
@@ -836,5 +900,37 @@ public abstract class ExecutionStrategy {
     public static String mkNameForPath(List<Field> currentField) {
         Field field = currentField.get(0);
         return field.getAlias() != null ? field.getAlias() : field.getName();
+    }
+
+    public class DummyObservableCompletableFuture<T> extends CompletableFuture<T> {
+        private Disposable subscription;
+        public DummyObservableCompletableFuture(Single<T> observable) {
+//            subscription = observable.subscribe(
+//                    this::complete,
+//                    this::completeExceptionally
+//            );
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            //subscription.dispose();
+            return super.cancel(mayInterruptIfRunning);
+        }
+    }
+
+    public class ObservableCompletableFuture<T> extends CompletableFuture<T> {
+        private Disposable subscription;
+        public ObservableCompletableFuture(Single<T> observable) {
+            subscription = observable.subscribe(
+                    this::complete,
+                    this::completeExceptionally
+            );
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            //subscription.dispose();
+            return super.cancel(mayInterruptIfRunning);
+        }
     }
 }
