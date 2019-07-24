@@ -9,6 +9,8 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.Flowable
 import io.reactivex.functions.Consumer
+import io.reactivex.internal.operators.flowable.FlowableSingle
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.TestScheduler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,6 +18,9 @@ import spock.lang.Specification
 
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
+import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.TimeUnit
+import java.util.stream.Collectors
 
 class ConcurrencyLimit extends Specification {
 
@@ -51,6 +56,8 @@ class ConcurrencyLimit extends Specification {
      */
     private final static Logger log = LoggerFactory.getLogger(ConcurrencyLimit.class);
 
+    def rand = ThreadLocalRandom.current()
+
     def schema = """
             type Query {
                 posts(limit: Int!): [Post]
@@ -64,7 +71,7 @@ class ConcurrencyLimit extends Specification {
 
     def executor = Executors.newFixedThreadPool(100)
 
-    def hi() {
+    def "test list of lists"() {
         def postsDf = new DataFetcher() {
             @Override
             Object get(DataFetchingEnvironment env) {
@@ -81,8 +88,8 @@ class ConcurrencyLimit extends Specification {
             @Override
             CompletableFuture<Object> get(DataFetchingEnvironment env) {
                 CompletableFuture.supplyAsync( {
-                    System.out.println(Thread.currentThread().getName() + " Resolving author for ${env.source.id}")
-                    System.out.println(Thread.currentThread().getName() + " Sleeping...")
+                    log.info(" Resolving author for ${env.source.id}")
+                    log.info(" Sleeping...")
                     Thread.sleep(1000)
                     def authorId = env.source["authorId"]
                     return "author$authorId"
@@ -103,7 +110,7 @@ class ConcurrencyLimit extends Specification {
         def graphql = GraphQL.newGraphQL(schema).build()
 
         when:
-        def times = 10
+        def times = 100
         def input = ExecutionInput.newExecutionInput()
                 .query("""
                         query {
@@ -157,6 +164,37 @@ class ConcurrencyLimit extends Specification {
 //    }
 
 
+    def "backpressure example with simple iterable"() {
+
+        List<Integer> l = (1..100).toList()
+        Flowable<Integer> obs = Flowable.fromIterable(l)
+
+        when:
+        // Below works as well as flowable but is a little less readable.
+//        def otherObs = obs
+//                .flatMap({ i ->
+//                    Observable.defer({ Observable.fromFuture(fetchValueFuture(i)) })
+//                            .subscribeOn(Schedulers.from(cachedThreadPool))
+//                }, false, 5)
+//                .doAfterNext({ string -> log.info("string fetchedValue {}", string) } )
+
+        def otherObs = obs
+                .parallel(5)
+                .runOn(Schedulers.io())
+                .flatMap({ i -> FlowableSingle.fromFuture(fetchValueFuture(i)) })
+                .doAfterNext({ string -> log.info("string fetchedValue {}", string) } )
+                .sequential()
+
+        log.info("About to sleep once")
+        TimeUnit.SECONDS.sleep(5)
+        log.info("About to subscribe")
+        otherObs.subscribe()
+        Thread.sleep(100_000)
+
+        then:
+        true
+    }
+
     def "back pressure example using a tree"() {
 
         def tree = createTree()
@@ -172,34 +210,36 @@ class ConcurrencyLimit extends Specification {
 
     TreeNode createTree(int levels = 5, int initialValue = 1) {
         def root = new TreeNode(value: initialValue, level: 1, parent: null)
-        root.left = createSubTree(root, levels)
-        root.right = createSubTree(root, levels)
+        root.children = createSubTree(root, levels)
         return root
     }
 
-    TreeNode createSubTree(TreeNode parent, int levels) {
+    List<TreeNode> createSubTree(TreeNode parent, int levels) {
         if (parent.level == levels) {
             return null
         }
 
-        def current = new TreeNode(value: parent.value.toInteger() + 1, level: parent.level + 1, parent: parent)
-        current.left = createSubTree(current, levels)
-        current.right = createSubTree(current, levels)
-        return current
+        List<TreeNode> children = []
+        for (def i = parent.level + 1; i<=levels; i++) {
+            def current = new TreeNode(value: parent.value.toInteger() + 1, level: parent.level + 1, parent: parent)
+            current.children = createSubTree(current, levels)
+            children.add(current)
+        }
+
+        return children
     }
 
     static class TreeNode {
-        TreeNode left
-        TreeNode right
-        TreeNode parent
-
         String value
-        int level
+        TreeNode parent
+        List<TreeNode> children
+
         Single<String> fetchedValue
         String actualFetchedValue
 
 
         // variables needed to print the tree like a tree
+        int level
         int depth=0
         int drawPos=0
 
@@ -260,13 +300,26 @@ class ConcurrencyLimit extends Specification {
     CompletableFuture<String> fetchValueFuture(TreeNode current) {
         return CompletableFuture.supplyAsync({
             Thread.sleep(100)
-            log.info("fetched Value {}", "F" + current.value )
             return "F" + current.value
         })
     }
 
 
+    CompletableFuture<String> fetchValueFuture(Integer current) {
+        return CompletableFuture.supplyAsync({
+            log.info("Sleeping...")
+            Thread.sleep(randInt(1000,5000))
+            return "F" + current
+        }, executor)
+    }
 
+    int randInt(int min, int max) {
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
+    }
 
     /************ Actual functions that print the tree like a tree ********************/
     static void drawTree(TreeNode root)
@@ -280,8 +333,7 @@ class ConcurrencyLimit extends Specification {
 
 
         LinkedList<TreeNode> q = new  LinkedList<TreeNode> ();
-        q.add(root.left);
-        q.add(root.right);
+        q.addAll(root.children);
 
         // draw root first
         root.drawPos = (int)Math.pow(2, depth-1)*H_SPREAD;
@@ -295,8 +347,7 @@ class ConcurrencyLimit extends Specification {
             drawElement (ele, depthChildCount, depth, q);
             if (ele == null)
                 continue;
-            q.add(ele.left);
-            q.add(ele.right);
+            q.addAll(root.children)
         }
         System.out.println();
     }
