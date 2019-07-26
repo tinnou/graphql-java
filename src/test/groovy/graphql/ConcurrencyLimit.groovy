@@ -62,12 +62,17 @@ class ConcurrencyLimit extends Specification {
 
     def schema = """
             type Query {
-                posts(limit: Int!): [Post]
+                allPosts(limit: Int!): [Post]
             }
             
             type Post {
                 id: ID!
-                author: String
+                comments(limit: Int!): [Comment]
+            }
+            
+            type Comment {
+                id: ID!
+                posts(limit: Int!): [Post]
             }
         """
 
@@ -75,13 +80,45 @@ class ConcurrencyLimit extends Specification {
             .namingPattern("datafetcher-get-pool-%s").build())
 
     def "test list of lists"() {
+        def allPostsDf = new DataFetcher() {
+            @Override
+            Object get(DataFetchingEnvironment env) {
+                def times = env.getArgument("limit") as Integer
+                def level = 1
+                def posts = []
+                log.info("Resolving Query.posts level:$level")
+                for (def it = 1; it <= times; it++) {
+                    posts.add([id: "Post$it".toString(), authorId: "$it", level: level])
+                }
+                return posts
+            }
+        }
+
         def postsDf = new DataFetcher() {
             @Override
             Object get(DataFetchingEnvironment env) {
                 def times = env.getArgument("limit") as Integer
+                def level =  (env.getSource().level as Integer) + 1
+                def commentId = env.source.id == null ? "" : env.source.id
                 def posts = []
+                log.info("Resolving Comment.posts $level")
                 for (def it = 1; it <= times; it++) {
-                    posts.add([id: "Post$it".toString(), authorId: "$it"])
+                    posts.add([id: "${commentId}-Post$it".toString(), authorId: "$it", level: level])
+                }
+                return posts
+            }
+        }
+
+        def commentsDf = new DataFetcher() {
+            @Override
+            Object get(DataFetchingEnvironment env) {
+                def times = env.getArgument("limit") as Integer
+                def level =  (env.source.level as Integer) + 1
+                def postId = env.source.id
+                def posts = []
+                log.info("Resolving Post.comments level:$level")
+                for (def it = 1; it <= times; it++) {
+                    posts.add([id: "${postId}-Comment$it".toString(), authorId: "$it", level: level])
                 }
                 return posts
             }
@@ -100,12 +137,36 @@ class ConcurrencyLimit extends Specification {
             }
         }
 
+        def idDf = new DataFetcher() {
+            @Override
+            CompletableFuture<Object> get(DataFetchingEnvironment env) {
+                CompletableFuture.supplyAsync( {
+                    log.info(" Resolving id for ${env.source.id} level:$env.source.level")
+                    log.info(" Sleeping...")
+                    Thread.sleep(1000)
+                    return env.source.id
+                }, executor)
+            }
+        }
+
         def runtimeWiring = RuntimeWiring.newRuntimeWiring()
                 .type(TypeRuntimeWiring.newTypeWiring("Query")
-                                .dataFetcher("posts", postsDf)
+                                .dataFetcher("allPosts", allPostsDf)
                                 .build())
                 .type(TypeRuntimeWiring.newTypeWiring("Post")
+                        .dataFetcher("comments", commentsDf)
+                        .build())
+                .type(TypeRuntimeWiring.newTypeWiring("Post")
                         .dataFetcher("author", authorDf)
+                        .build())
+                .type(TypeRuntimeWiring.newTypeWiring("Post")
+                        .dataFetcher("id", idDf)
+                        .build())
+                .type(TypeRuntimeWiring.newTypeWiring("Comment")
+                        .dataFetcher("id", idDf)
+                        .build())
+                .type(TypeRuntimeWiring.newTypeWiring("Comment")
+                        .dataFetcher("posts", postsDf)
                         .build())
                 .build()
         def schema = TestUtil.schema(schema, runtimeWiring)
@@ -114,39 +175,44 @@ class ConcurrencyLimit extends Specification {
                 .instrumentation(SimpleInstrumentation.INSTANCE).build()
 
         when:
-        def times = 50
+        def times = 10
         def input = ExecutionInput.newExecutionInput()
                 .query("""
                         query {
-                            posts(limit: $times) {
+                            allPosts(limit: $times) {
                               id 
-                              author
+                              comments(limit: $times) {
+                                  id
+                                  posts(limit: $times) {
+                                    id
+                                  }
+                              }
                             }
                         }
                         """)
                 .build()
         def executionResultAsync = graphql.executeAsync(input)
-        def executionResultAsync2 = graphql.executeAsync(input)
-        def executionResultAsync3 = graphql.executeAsync(input)
+//        def executionResultAsync2 = graphql.executeAsync(input)
+//        def executionResultAsync3 = graphql.executeAsync(input)
 
         def authorIds = []
         for (def it = 1; it <= times; it++) {
             authorIds.add("author$it")
         }
-
-        def future = Async.each(Arrays.asList(executionResultAsync, executionResultAsync2, executionResultAsync3)).get()
+        def future = Async.each(Arrays.asList(executionResultAsync)).get()
+//        def future = Async.each(Arrays.asList(executionResultAsync, executionResultAsync2, executionResultAsync3)).get()
         def executionResult = future.get(0)
-        def executionResult2 = future.get(1)
-        def executionResult3 = future.get(2)
+//        def executionResult2 = future.get(1)
+//        def executionResult3 = future.get(2)
 
 
         then:
         executionResult.errors.isEmpty()
         executionResult.data.posts.author == authorIds
-        executionResult2.errors.isEmpty()
-        executionResult2.data.posts.author == authorIds
-        executionResult3.errors.isEmpty()
-        executionResult3.data.posts.author == authorIds
+//        executionResult2.errors.isEmpty()
+//        executionResult2.data.posts.author == authorIds
+//        executionResult3.errors.isEmpty()
+//        executionResult3.data.posts.author == authorIds
     }
 
 //    def "rxjava : defer() makes the completable future call a cold observable"() {

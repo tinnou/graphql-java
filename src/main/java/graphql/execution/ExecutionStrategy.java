@@ -121,6 +121,7 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 public abstract class ExecutionStrategy {
 
     protected final AtomicInteger currentConcurrency = new AtomicInteger(0);
+    protected final int startConcurrency = 2;
     protected final int maxConcurrency = 5;
     private static final Logger log = LoggerFactory.getLogger(ExecutionStrategy.class);
 
@@ -545,7 +546,7 @@ public abstract class ExecutionStrategy {
 
         Flowable<Map.Entry<Integer, Object>> flowableOfValues = FlowableSingle.fromIterable(indexedValues);
 
-        Flowable<AbstractMap.SimpleEntry<Integer, ExecutionResult>> fieldValueInfoFlowable = flowableOfValues.parallel(3)
+        Flowable<AbstractMap.SimpleEntry<Integer, ExecutionResult>> fieldValueInfoFlowable = flowableOfValues.parallel(2)
                 .flatMap(entry -> {
                     int index = entry.getKey();
                     Object item = entry.getValue();

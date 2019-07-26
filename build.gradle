@@ -70,6 +70,7 @@ dependencies {
 
     testCompile 'org.reactivestreams:reactive-streams-tck:' + reactiveStreamsVersion
     compile "io.reactivex.rxjava2:rxjava:2.2.10"
+    compile group: 'com.github.akarnokd', name: 'rxjava2-extensions', version: '0.20.10'
 
     testCompile 'org.testng:testng:6.1.1' // use for reactive streams test inheritance
     compile group: 'com.google.guava', name: 'guava', version: '28.0-jre'
