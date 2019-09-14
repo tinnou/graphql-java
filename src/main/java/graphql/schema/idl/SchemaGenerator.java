@@ -76,7 +76,7 @@ public class SchemaGenerator {
         schemaGeneratorHelper.addDirectivesIncludedByDefault(typeRegistryCopy);
 
         List<GraphQLError> errors = typeChecker.checkTypeRegistry(typeRegistryCopy, wiring);
-        if (!errors.isEmpty()) {
+        if (!errors.isEmpty() && !options.allowErrors) {
             throw new SchemaProblem(errors);
         }
 
@@ -141,10 +141,12 @@ public class SchemaGenerator {
     public static class Options {
         private final boolean useCommentsAsDescription;
         private final boolean captureAstDefinitions;
+        private final boolean allowErrors;
 
-        Options(boolean useCommentsAsDescription, boolean captureAstDefinitions) {
+        Options(boolean useCommentsAsDescription, boolean captureAstDefinitions, boolean allowErrors) {
             this.useCommentsAsDescription = useCommentsAsDescription;
             this.captureAstDefinitions = captureAstDefinitions;
+            this.allowErrors = allowErrors;
         }
 
         public boolean isUseCommentsAsDescription() {
@@ -156,7 +158,7 @@ public class SchemaGenerator {
         }
 
         public static Options defaultOptions() {
-            return new Options(true, true);
+            return new Options(true, true, false);
         }
 
         /**
@@ -169,7 +171,7 @@ public class SchemaGenerator {
          * @return a new Options object
          */
         public Options useCommentsAsDescriptions(boolean useCommentsAsDescription) {
-            return new Options(useCommentsAsDescription, captureAstDefinitions);
+            return new Options(useCommentsAsDescription, captureAstDefinitions, allowErrors);
         }
 
         /**
@@ -181,7 +183,29 @@ public class SchemaGenerator {
          * @return a new Options object
          */
         public Options captureAstDefinitions(boolean captureAstDefinitions) {
-            return new Options(useCommentsAsDescription, captureAstDefinitions);
+            return new Options(useCommentsAsDescription, captureAstDefinitions, allowErrors);
+        }
+
+        /**
+         * This controls whether a schema will be generated if validation
+         * errors are found.
+         *
+         * @return true if validation errors are allowed; the default is false
+         */
+        public boolean isAllowErrors() {
+            return allowErrors;
+        }
+
+        /**
+         * This controls whether a schema will be generated if validation
+         * errors are found.
+         *
+         * @param flag the value to use
+         *
+         * @return true if validation errors are allowed; the default is false
+         */
+        public Options allowErrors(boolean flag) {
+            return new Options(useCommentsAsDescription, captureAstDefinitions, flag);
         }
     }
 }
