@@ -96,9 +96,15 @@ public class SchemaGenerator {
      */
     public static class Options {
         private final boolean enforceSchemaDirectives;
+        private final boolean allowErrors;
+
+        Options(boolean enforceSchemaDirectives, boolean allowErrors) {
+            this.enforceSchemaDirectives = enforceSchemaDirectives;
+            this.allowErrors = allowErrors;
+        }
 
         Options(boolean enforceSchemaDirectives) {
-            this.enforceSchemaDirectives = enforceSchemaDirectives;
+            this(enforceSchemaDirectives, false);
         }
 
         /**
@@ -109,6 +115,16 @@ public class SchemaGenerator {
          */
         public boolean isEnforceSchemaDirectives() {
             return enforceSchemaDirectives;
+        }
+
+        /**
+         * This controls whether a schema will be generated if validation
+         * errors are found.
+         *
+         * @return true if validation errors are allowed; the default is false
+         */
+        public boolean isAllowErrors() {
+            return allowErrors;
         }
 
         public static Options defaultOptions() {
@@ -123,9 +139,20 @@ public class SchemaGenerator {
          * @return the new options
          */
         public Options enforceSchemaDirectives(boolean flag) {
-            return new Options(flag);
+            return new Options(flag, allowErrors);
         }
 
+        /**
+         * This controls whether a schema will be generated if validation
+         * errors are found.
+         *
+         * @param flag the value to use
+         *
+         * @return true if validation errors are allowed; the default is false
+         */
+        public Options allowErrors(boolean flag) {
+            return new Options(enforceSchemaDirectives, flag);
+        }
     }
 
 
@@ -261,7 +288,7 @@ public class SchemaGenerator {
         schemaGeneratorHelper.addDeprecatedDirectiveDefinition(typeRegistryCopy);
 
         List<GraphQLError> errors = typeChecker.checkTypeRegistry(typeRegistryCopy, wiring, options.enforceSchemaDirectives);
-        if (!errors.isEmpty()) {
+        if (!errors.isEmpty() && !options.allowErrors) {
             throw new SchemaProblem(errors);
         }
 
