@@ -16,6 +16,14 @@ public class UnExecutableSchemaGenerator {
      * be sensibly executed
      */
     public static GraphQLSchema makeUnExecutableSchema(TypeDefinitionRegistry registry) {
+        return makeUnExecutableSchema(SchemaGenerator.Options.defaultOptions(), registry);
+    }
+
+    /*
+     * Creates just enough runtime wiring to allow a schema to be built but which CANT
+     * be sensibly executed
+     */
+    public static GraphQLSchema makeUnExecutableSchema(SchemaGenerator.Options options, TypeDefinitionRegistry registry) {
         RuntimeWiring runtimeWiring = EchoingWiringFactory.newEchoingWiring(wiring -> {
             Map<String, ScalarTypeDefinition> scalars = registry.scalars();
             scalars.forEach((name, v) -> {
@@ -25,6 +33,6 @@ public class UnExecutableSchemaGenerator {
             });
         });
 
-        return new SchemaGenerator().makeExecutableSchema(registry, runtimeWiring);
+        return new SchemaGenerator().makeExecutableSchema(options, registry, runtimeWiring);
     }
 }

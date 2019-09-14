@@ -25,12 +25,36 @@ public class SchemaGenerator {
      * These options control how the schema generation works
      */
     public static class Options {
+        private final boolean allowErrors;
 
-        Options() {
+        Options(boolean allowErrors) {
+            this.allowErrors = allowErrors;
         }
 
         public static Options defaultOptions() {
-            return new Options();
+            return new Options(false);
+        }
+
+        /**
+         * This controls whether a schema will be generated if validation
+         * errors are found.
+         *
+         * @return true if validation errors are allowed; the default is false
+         */
+        public boolean isAllowErrors() {
+            return allowErrors;
+        }
+
+        /**
+         * This controls whether a schema will be generated if validation
+         * errors are found.
+         *
+         * @param flag the value to use
+         *
+         * @return true if validation errors are allowed; the default is false
+         */
+        public Options allowErrors(boolean flag) {
+            return new Options(flag);
         }
     }
 
@@ -70,7 +94,7 @@ public class SchemaGenerator {
         schemaGeneratorHelper.addDirectivesIncludedByDefault(typeRegistryCopy);
 
         List<GraphQLError> errors = typeChecker.checkTypeRegistry(typeRegistryCopy, wiring);
-        if (!errors.isEmpty()) {
+        if (!errors.isEmpty() && !options.allowErrors) {
             throw new SchemaProblem(errors);
         }
 
