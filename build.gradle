@@ -4,11 +4,11 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
+apply plugin: 'nebula'
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'antlr'
-apply plugin: 'osgi'
 
 def getDevelopmentVersion() {
     def output = new StringBuilder()
@@ -99,18 +99,8 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-javadoc {
-    options.encoding = 'UTF-8'
-}
-
 artifacts {
     archives sourcesJar
-    archives javadocJar
 }
 
 test {
@@ -137,9 +127,6 @@ publishing {
 
             artifact sourcesJar {
                 classifier "sources"
-            }
-            artifact javadocJar {
-                classifier "javadoc"
             }
             pom.withXml {
                 // The ANTLR-related code below--introduced in `1ac98bf`--addresses an issue with
@@ -214,10 +201,4 @@ bintray {
 // all publish tasks depend on the build task
 tasks.withType(PublishToMavenRepository) {
     dependsOn build
-}
-
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.10.2'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
