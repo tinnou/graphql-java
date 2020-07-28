@@ -1,0 +1,29 @@
+#!/bin/bash -efx
+
+if [ "$1" == '--no-op' ]
+then
+  echo='echo'
+else
+  echo=
+fi
+
+gradle=./gradlew
+
+export ROCKET_TAG_TYPE
+export ROCKET_EVENT_TYPE
+
+gradle_options='--stacktrace'
+gradle_tasks='clean'
+
+if [ "${ROCKET_EVENT_TYPE}" = "PUSH" ] && [[ "$ROCKET_BRANCH" =~ [0-9]+\.x ]]; then
+  # A push was made to a branch that matches the .x format (e.g 14.x)
+  gradle_options="${gradle_options} -Prelease.scope=patch"
+  gradle_tasks="${gradle_tasks} final"
+elif [[ "$ROCKET_BRANCH" =~ pull.* ]]; then
+  # pull requests do not trigger patch version bumps, a no tags are created
+  gradle_tasks="${gradle_tasks} assemble check"
+else
+  gradle_tasks="${gradle_tasks} assemble check"
+fi
+
+${echo} ${gradle} ${gradle_options} ${gradle_tasks}

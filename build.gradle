@@ -1,9 +1,3 @@
-import java.text.SimpleDateFormat
-
-//plugins {
-//    id "com.jfrog.bintray" version "1.8.4"
-//}
-
 apply plugin: 'nebula'
 apply plugin: 'nebula.release'
 apply plugin: 'java'
@@ -11,28 +5,10 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'antlr'
 
-def getDevelopmentVersion() {
-    def output = new StringBuilder()
-    def error = new StringBuilder()
-    def gitShortHash = ["git", "-C", projectDir.toString(), "rev-parse", "--short", "HEAD"].execute()
-    gitShortHash.waitForProcessOutput(output, error)
-    def gitHash = output.toString().trim()
-    if (gitHash.isEmpty()) {
-        println "git hash is empty: error: ${error.toString()}"
-        throw new IllegalStateException("git hash could not be determined")
-    }
-    def version = new SimpleDateFormat('yyyy-MM-dd\'T\'HH-mm-ss').format(new Date()) + "-" + gitHash
-    println "created development version: $version"
-    version
-}
-
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 def reactiveStreamsVersion = '1.0.2'
 def slf4jVersion = '1.7.25'
-def releaseVersion = '14.1.1'
-version = releaseVersion + "-netflix"
 group = 'com.graphql-java'
 
 
@@ -114,9 +90,14 @@ allprojects {
     tasks.withType(Javadoc) {
         exclude('**/antlr/**')
     }
-
-
 }
+
+nebulaRelease {
+    releaseBranchPatterns = [/14\.x/] as Set
+    excludeBranchPatterns = [] as Set
+}
+
+
 //
 //publishing {
 //
