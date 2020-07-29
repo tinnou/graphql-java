@@ -1,4 +1,3 @@
-org: STE
 scm:
   checkout:
     prBuildMerge: true
