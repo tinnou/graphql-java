@@ -9,8 +9,8 @@ fi
 
 gradle=./gradlew
 
-export ROCKET_TAG_TYPE
-export ROCKET_EVENT_TYPE
+# use by build.gradle to find out whether the build is local or CI.
+export ROCKET_REPO_NAME
 
 gradle_options='--stacktrace'
 gradle_tasks='clean'
