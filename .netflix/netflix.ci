@@ -15,7 +15,7 @@ export ROCKET_REPO_NAME
 gradle_options='--stacktrace'
 gradle_tasks='clean'
 
-if [ "${ROCKET_EVENT_TYPE}" = "PUSH" ] && [[ "$ROCKET_BRANCH" =~ [0-9]+\.x ]]; then
+if [ "${ROCKET_EVENT_TYPE}" = "PUSH" ] && [[ "$ROCKET_BRANCH" =~ ^[0-9]+\.x$ ]]; then
   # A push was made to a branch that matches the .x format (e.g 14.x)
   gradle_options="${gradle_options} -Prelease.scope=patch"
   gradle_tasks="${gradle_tasks} final"
