@@ -1,0 +1,686 @@
+{
+    "antlr": {
+        "com.ibm.icu:icu4j": {
+            "locked": "61.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.abego.treelayout:org.abego.treelayout.core": {
+            "locked": "1.0.3",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:ST4": {
+            "locked": "4.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr-runtime": {
+            "locked": "3.5.2",
+            "transitive": [
+                "org.antlr:ST4",
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr4": {
+            "locked": "4.7.2",
+            "requested": "4.7.2"
+        },
+        "org.antlr:antlr4-runtime": {
+            "locked": "4.7.2",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.glassfish:javax.json": {
+            "locked": "1.0.4",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        }
+    },
+    "compileClasspath": {
+        "com.graphql-java:java-dataloader": {
+            "locked": "2.2.3",
+            "requested": "2.2.3"
+        },
+        "com.ibm.icu:icu4j": {
+            "locked": "61.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.abego.treelayout:org.abego.treelayout.core": {
+            "locked": "1.0.3",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:ST4": {
+            "locked": "4.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr-runtime": {
+            "locked": "3.5.2",
+            "transitive": [
+                "org.antlr:ST4",
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr4": {
+            "locked": "4.7.2",
+            "requested": "4.7.2"
+        },
+        "org.antlr:antlr4-runtime": {
+            "locked": "4.7.2",
+            "requested": "4.7.2",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.glassfish:javax.json": {
+            "locked": "1.0.4",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.reactivestreams:reactive-streams": {
+            "locked": "1.0.2",
+            "requested": "1.0.2"
+        },
+        "org.slf4j:slf4j-api": {
+            "locked": "1.7.25",
+            "requested": "1.7.25"
+        }
+    },
+    "repositoryContentDescriptorMavenModules": {
+        "netflix.nebula.repositorycontent:repository-content-descriptor-maven-modules": {
+            "locked": "0.11.4"
+        }
+    },
+    "resolutionRules": {
+        "com.netflix.nebula:gradle-resolution-rules": {
+            "locked": "0.63.0",
+            "requested": "latest.release"
+        },
+        "netflix.nebula.resolutionrules:resolution-rules": {
+            "locked": "0.159.0",
+            "requested": "latest.release"
+        }
+    },
+    "runtimeClasspath": {
+        "com.graphql-java:java-dataloader": {
+            "locked": "2.2.3",
+            "requested": "2.2.3"
+        },
+        "com.ibm.icu:icu4j": {
+            "locked": "61.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.abego.treelayout:org.abego.treelayout.core": {
+            "locked": "1.0.3",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:ST4": {
+            "locked": "4.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr-runtime": {
+            "locked": "3.5.2",
+            "transitive": [
+                "org.antlr:ST4",
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr4": {
+            "locked": "4.7.2",
+            "requested": "4.7.2"
+        },
+        "org.antlr:antlr4-runtime": {
+            "locked": "4.7.2",
+            "requested": "4.7.2",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.glassfish:javax.json": {
+            "locked": "1.0.4",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.reactivestreams:reactive-streams": {
+            "locked": "1.0.2",
+            "requested": "1.0.2"
+        },
+        "org.slf4j:slf4j-api": {
+            "locked": "1.7.25",
+            "requested": "1.7.25"
+        }
+    },
+    "testCompileClasspath": {
+        "cglib:cglib-nodep": {
+            "locked": "3.3.0",
+            "requested": "3.3.0"
+        },
+        "com.beust:jcommander": {
+            "locked": "1.12",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        },
+        "com.fasterxml.jackson.core:jackson-annotations": {
+            "locked": "2.10.0",
+            "transitive": [
+                "com.fasterxml.jackson.core:jackson-databind"
+            ]
+        },
+        "com.fasterxml.jackson.core:jackson-core": {
+            "locked": "2.10.0",
+            "transitive": [
+                "com.fasterxml.jackson.core:jackson-databind"
+            ]
+        },
+        "com.fasterxml.jackson.core:jackson-databind": {
+            "locked": "2.10.0",
+            "requested": "2.10.0"
+        },
+        "com.github.javafaker:javafaker": {
+            "locked": "0.13",
+            "requested": "0.13"
+        },
+        "com.github.mifmif:generex": {
+            "locked": "1.0.2",
+            "transitive": [
+                "com.github.javafaker:javafaker"
+            ]
+        },
+        "com.google.code.gson:gson": {
+            "locked": "2.8.0",
+            "requested": "2.8.0"
+        },
+        "com.graphql-java:java-dataloader": {
+            "locked": "2.2.3",
+            "requested": "2.2.3"
+        },
+        "com.ibm.icu:icu4j": {
+            "locked": "61.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "dk.brics.automaton:automaton": {
+            "locked": "1.11-8",
+            "transitive": [
+                "com.github.mifmif:generex"
+            ]
+        },
+        "io.reactivex.rxjava2:rxjava": {
+            "locked": "2.1.5",
+            "requested": "2.1.5"
+        },
+        "javax.servlet:javax.servlet-api": {
+            "locked": "3.1.0",
+            "transitive": [
+                "org.eclipse.jetty:jetty-server"
+            ]
+        },
+        "junit:junit": {
+            "locked": "4.12",
+            "requested": "4.12",
+            "transitive": [
+                "org.spockframework:spock-core",
+                "org.testng:testng"
+            ]
+        },
+        "net.sf.jopt-simple:jopt-simple": {
+            "locked": "4.6",
+            "transitive": [
+                "org.openjdk.jmh:jmh-core"
+            ]
+        },
+        "org.abego.treelayout:org.abego.treelayout.core": {
+            "locked": "1.0.3",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:ST4": {
+            "locked": "4.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr-runtime": {
+            "locked": "3.5.2",
+            "transitive": [
+                "org.antlr:ST4",
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr4": {
+            "locked": "4.7.2",
+            "requested": "4.7.2"
+        },
+        "org.antlr:antlr4-runtime": {
+            "locked": "4.7.2",
+            "requested": "4.7.2",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.apache.commons:commons-lang3": {
+            "locked": "3.5",
+            "transitive": [
+                "com.github.javafaker:javafaker"
+            ]
+        },
+        "org.apache.commons:commons-math3": {
+            "locked": "3.2",
+            "transitive": [
+                "org.openjdk.jmh:jmh-core"
+            ]
+        },
+        "org.awaitility:awaitility": {
+            "locked": "3.0.0",
+            "transitive": [
+                "org.awaitility:awaitility-groovy"
+            ]
+        },
+        "org.awaitility:awaitility-groovy": {
+            "locked": "3.0.0",
+            "requested": "3.0.0"
+        },
+        "org.beanshell:bsh": {
+            "locked": "2.0b4",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        },
+        "org.codehaus.groovy:groovy-all": {
+            "locked": "2.4.13",
+            "requested": "2.4.13",
+            "transitive": [
+                "org.awaitility:awaitility-groovy",
+                "org.spockframework:spock-core"
+            ]
+        },
+        "org.eclipse.jetty:jetty-http": {
+            "locked": "9.4.5.v20170502",
+            "transitive": [
+                "org.eclipse.jetty:jetty-server"
+            ]
+        },
+        "org.eclipse.jetty:jetty-io": {
+            "locked": "9.4.5.v20170502",
+            "transitive": [
+                "org.eclipse.jetty:jetty-http",
+                "org.eclipse.jetty:jetty-server"
+            ]
+        },
+        "org.eclipse.jetty:jetty-server": {
+            "locked": "9.4.5.v20170502",
+            "requested": "9.4.5.v20170502"
+        },
+        "org.eclipse.jetty:jetty-util": {
+            "locked": "9.4.5.v20170502",
+            "transitive": [
+                "org.eclipse.jetty:jetty-http",
+                "org.eclipse.jetty:jetty-io"
+            ]
+        },
+        "org.glassfish:javax.json": {
+            "locked": "1.0.4",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.hamcrest:hamcrest-core": {
+            "locked": "1.3",
+            "transitive": [
+                "junit:junit",
+                "org.awaitility:awaitility",
+                "org.hamcrest:hamcrest-library"
+            ]
+        },
+        "org.hamcrest:hamcrest-library": {
+            "locked": "1.3",
+            "transitive": [
+                "org.awaitility:awaitility"
+            ]
+        },
+        "org.objenesis:objenesis": {
+            "locked": "2.5.1",
+            "requested": "2.1",
+            "transitive": [
+                "org.awaitility:awaitility"
+            ]
+        },
+        "org.openjdk.jmh:jmh-core": {
+            "locked": "1.21",
+            "requested": "1.21",
+            "transitive": [
+                "org.openjdk.jmh:jmh-generator-annprocess"
+            ]
+        },
+        "org.openjdk.jmh:jmh-generator-annprocess": {
+            "locked": "1.21",
+            "requested": "1.21"
+        },
+        "org.reactivestreams:reactive-streams": {
+            "locked": "1.0.2",
+            "requested": "1.0.2",
+            "transitive": [
+                "io.reactivex.rxjava2:rxjava",
+                "org.reactivestreams:reactive-streams-examples",
+                "org.reactivestreams:reactive-streams-tck"
+            ]
+        },
+        "org.reactivestreams:reactive-streams-examples": {
+            "locked": "1.0.2",
+            "transitive": [
+                "org.reactivestreams:reactive-streams-tck"
+            ]
+        },
+        "org.reactivestreams:reactive-streams-tck": {
+            "locked": "1.0.2",
+            "requested": "1.0.2"
+        },
+        "org.slf4j:slf4j-api": {
+            "locked": "1.7.25",
+            "requested": "1.7.25",
+            "transitive": [
+                "org.slf4j:slf4j-simple"
+            ]
+        },
+        "org.slf4j:slf4j-simple": {
+            "locked": "1.7.25",
+            "requested": "1.7.25"
+        },
+        "org.spockframework:spock-core": {
+            "locked": "1.1-groovy-2.4",
+            "requested": "1.1-groovy-2.4"
+        },
+        "org.testng:testng": {
+            "locked": "6.1.1",
+            "requested": "6.1.1",
+            "transitive": [
+                "org.reactivestreams:reactive-streams-tck"
+            ]
+        },
+        "org.yaml:snakeyaml": {
+            "locked": "1.6",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        }
+    },
+    "testRuntimeClasspath": {
+        "cglib:cglib-nodep": {
+            "locked": "3.3.0",
+            "requested": "3.3.0"
+        },
+        "com.beust:jcommander": {
+            "locked": "1.12",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        },
+        "com.fasterxml.jackson.core:jackson-annotations": {
+            "locked": "2.10.0",
+            "transitive": [
+                "com.fasterxml.jackson.core:jackson-databind"
+            ]
+        },
+        "com.fasterxml.jackson.core:jackson-core": {
+            "locked": "2.10.0",
+            "transitive": [
+                "com.fasterxml.jackson.core:jackson-databind"
+            ]
+        },
+        "com.fasterxml.jackson.core:jackson-databind": {
+            "locked": "2.10.0",
+            "requested": "2.10.0"
+        },
+        "com.github.javafaker:javafaker": {
+            "locked": "0.13",
+            "requested": "0.13"
+        },
+        "com.github.mifmif:generex": {
+            "locked": "1.0.2",
+            "transitive": [
+                "com.github.javafaker:javafaker"
+            ]
+        },
+        "com.google.code.gson:gson": {
+            "locked": "2.8.0",
+            "requested": "2.8.0"
+        },
+        "com.graphql-java:java-dataloader": {
+            "locked": "2.2.3",
+            "requested": "2.2.3"
+        },
+        "com.ibm.icu:icu4j": {
+            "locked": "61.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "dk.brics.automaton:automaton": {
+            "locked": "1.11-8",
+            "transitive": [
+                "com.github.mifmif:generex"
+            ]
+        },
+        "io.reactivex.rxjava2:rxjava": {
+            "locked": "2.1.5",
+            "requested": "2.1.5"
+        },
+        "javax.servlet:javax.servlet-api": {
+            "locked": "3.1.0",
+            "transitive": [
+                "org.eclipse.jetty:jetty-server"
+            ]
+        },
+        "junit:junit": {
+            "locked": "4.12",
+            "requested": "4.12",
+            "transitive": [
+                "org.spockframework:spock-core",
+                "org.testng:testng"
+            ]
+        },
+        "net.sf.jopt-simple:jopt-simple": {
+            "locked": "4.6",
+            "transitive": [
+                "org.openjdk.jmh:jmh-core"
+            ]
+        },
+        "org.abego.treelayout:org.abego.treelayout.core": {
+            "locked": "1.0.3",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:ST4": {
+            "locked": "4.1",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr-runtime": {
+            "locked": "3.5.2",
+            "transitive": [
+                "org.antlr:ST4",
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.antlr:antlr4": {
+            "locked": "4.7.2",
+            "requested": "4.7.2"
+        },
+        "org.antlr:antlr4-runtime": {
+            "locked": "4.7.2",
+            "requested": "4.7.2",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.apache.commons:commons-lang3": {
+            "locked": "3.5",
+            "transitive": [
+                "com.github.javafaker:javafaker"
+            ]
+        },
+        "org.apache.commons:commons-math3": {
+            "locked": "3.2",
+            "transitive": [
+                "org.openjdk.jmh:jmh-core"
+            ]
+        },
+        "org.awaitility:awaitility": {
+            "locked": "3.0.0",
+            "transitive": [
+                "org.awaitility:awaitility-groovy"
+            ]
+        },
+        "org.awaitility:awaitility-groovy": {
+            "locked": "3.0.0",
+            "requested": "3.0.0"
+        },
+        "org.beanshell:bsh": {
+            "locked": "2.0b4",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        },
+        "org.codehaus.groovy:groovy-all": {
+            "locked": "2.4.13",
+            "requested": "2.4.13",
+            "transitive": [
+                "org.awaitility:awaitility-groovy",
+                "org.spockframework:spock-core"
+            ]
+        },
+        "org.eclipse.jetty:jetty-http": {
+            "locked": "9.4.5.v20170502",
+            "transitive": [
+                "org.eclipse.jetty:jetty-server"
+            ]
+        },
+        "org.eclipse.jetty:jetty-io": {
+            "locked": "9.4.5.v20170502",
+            "transitive": [
+                "org.eclipse.jetty:jetty-http",
+                "org.eclipse.jetty:jetty-server"
+            ]
+        },
+        "org.eclipse.jetty:jetty-server": {
+            "locked": "9.4.5.v20170502",
+            "requested": "9.4.5.v20170502"
+        },
+        "org.eclipse.jetty:jetty-util": {
+            "locked": "9.4.5.v20170502",
+            "transitive": [
+                "org.eclipse.jetty:jetty-http",
+                "org.eclipse.jetty:jetty-io"
+            ]
+        },
+        "org.glassfish:javax.json": {
+            "locked": "1.0.4",
+            "transitive": [
+                "org.antlr:antlr4"
+            ]
+        },
+        "org.hamcrest:hamcrest-core": {
+            "locked": "1.3",
+            "transitive": [
+                "junit:junit",
+                "org.awaitility:awaitility",
+                "org.hamcrest:hamcrest-library"
+            ]
+        },
+        "org.hamcrest:hamcrest-library": {
+            "locked": "1.3",
+            "transitive": [
+                "org.awaitility:awaitility"
+            ]
+        },
+        "org.objenesis:objenesis": {
+            "locked": "2.5.1",
+            "requested": "2.1",
+            "transitive": [
+                "org.awaitility:awaitility"
+            ]
+        },
+        "org.openjdk.jmh:jmh-core": {
+            "locked": "1.21",
+            "requested": "1.21",
+            "transitive": [
+                "org.openjdk.jmh:jmh-generator-annprocess"
+            ]
+        },
+        "org.openjdk.jmh:jmh-generator-annprocess": {
+            "locked": "1.21",
+            "requested": "1.21"
+        },
+        "org.reactivestreams:reactive-streams": {
+            "locked": "1.0.2",
+            "requested": "1.0.2",
+            "transitive": [
+                "io.reactivex.rxjava2:rxjava",
+                "org.reactivestreams:reactive-streams-examples",
+                "org.reactivestreams:reactive-streams-tck"
+            ]
+        },
+        "org.reactivestreams:reactive-streams-examples": {
+            "locked": "1.0.2",
+            "transitive": [
+                "org.reactivestreams:reactive-streams-tck"
+            ]
+        },
+        "org.reactivestreams:reactive-streams-tck": {
+            "locked": "1.0.2",
+            "requested": "1.0.2"
+        },
+        "org.slf4j:slf4j-api": {
+            "locked": "1.7.25",
+            "requested": "1.7.25",
+            "transitive": [
+                "org.slf4j:slf4j-simple"
+            ]
+        },
+        "org.slf4j:slf4j-simple": {
+            "locked": "1.7.25",
+            "requested": "1.7.25"
+        },
+        "org.spockframework:spock-core": {
+            "locked": "1.1-groovy-2.4",
+            "requested": "1.1-groovy-2.4"
+        },
+        "org.testng:testng": {
+            "locked": "6.1.1",
+            "requested": "6.1.1",
+            "transitive": [
+                "org.reactivestreams:reactive-streams-tck"
+            ]
+        },
+        "org.yaml:snakeyaml": {
+            "locked": "1.6",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        }
+    }
+}

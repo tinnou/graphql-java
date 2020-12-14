@@ -1,16 +1,17 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id "com.jfrog.bintray" version "1.8.4"
-    id 'java'
-    id 'java-library'
-    id 'maven'
-    id 'maven-publish'
-    id 'antlr'
-    id "com.github.johnrengelman.shadow" version "6.1.0"
-    // id 'osgi' doesn't work anymore for gradle 6.6
+    id "com.github.johnrengelman.shadow" version "6.1.0" apply false
 }
 
+apply plugin: 'netflix.nebula'
+apply plugin: 'nebula.release'
+apply plugin: 'java'
+apply plugin: 'java-library'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'antlr'
+apply plugin: "com.github.johnrengelman.shadow"
 
 def getDevelopmentVersion() {
     def output = new StringBuilder()
@@ -38,8 +39,16 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 def reactiveStreamsVersion = '1.0.2'
 def slf4jVersion = '1.7.30'
-def releaseVersion = System.env.RELEASE_VERSION
-version = releaseVersion ? releaseVersion : getDevelopmentVersion()
+
+ext {
+    // if local build then use graphql-java versioning scheme, on CI server use Nebula
+    // env variable ROCKET_REPO_NAME is set by RocketCI
+    isLocalBuild = !System.getenv().containsKey("ROCKET_REPO_NAME")
+    if (isLocalBuild) {
+        project.version = getDevelopmentVersion()
+    }
+}
+
 group = 'com.graphql-java'
 
 
@@ -177,101 +186,7 @@ allprojects {
     }
 }
 
-publishing {
-
-    publications {
-
-        graphqlJava(MavenPublication) {
-            version version
-            from components.java
-
-            artifact sourcesJar {
-                classifier "sources"
-            }
-            artifact javadocJar {
-                classifier "javadoc"
-            }
-            pom.withXml {
-                // The ANTLR-related code below--introduced in `1ac98bf`--addresses an issue with
-                // the Gradle ANTLR plugin. `1ac98bf` can be reverted and this comment removed once
-                // that issue is fixed and Gradle upgraded. See https://goo.gl/L92KiF and https://goo.gl/FY0PVR.
-                //
-                // We are removing here guava because the classes we want to use is "shaded" into the jar itself
-                // via the shadowJar task
-                Node pomNode = asNode()
-                pomNode.dependencies.'*'.findAll() {
-                    it.artifactId.text() == 'antlr4' || it.artifactId.text() == 'guava'
-                }.each() {
-                    it.parent().remove(it)
-                }
-                pomNode.children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
-                    name 'graphql-java'
-                    description 'GraphqL Java'
-                    url "https://github.com/graphql-java/graphql-java"
-                    scm {
-                        url "https://github.com/graphql-java/graphql-java"
-                        connection "https://github.com/graphql-java/graphql-java"
-                        developerConnection "https://github.com/graphql-java/graphql-java"
-                    }
-                    licenses {
-                        license {
-                            name 'MIT'
-                            url 'https://github.com/graphql-java/graphql-java/blob/master/LICENSE.md'
-                            distribution 'repo'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id 'andimarek'
-                            name 'Andreas Marek'
-                        }
-                    }
-                }
-            }
-        }
-    }
+nebulaRelease {
+    releaseBranchPatterns = [/16\.x/] as Set
+    excludeBranchPatterns = [] as Set
 }
-
-
-bintray {
-    user = System.env.BINTRAY_USER ?: project["bintray.user"]
-    key = System.env.BINTRAY_API_KEY ?: project["bintray.key"]
-    publications = ['graphqlJava']
-    publish = true
-    pkg {
-        repo = 'graphql-java'
-        name = 'graphql-java'
-        desc = 'GraphQL in Java'
-        licenses = ['MIT']
-        vcsUrl = 'https://github.com/graphql-java/graphql-java'
-
-        version {
-            name = project.version
-            desc = project.description
-            released = new Date()
-            vcsTag = 'v' + project.version
-            gpg {
-                sign = true
-            }
-            mavenCentralSync {
-                sync = true
-                user = System.env.MAVEN_CENTRAL_USER
-                password = System.env.MAVEN_CENTRAL_PASSWORD
-                close = '1'
-            }
-        }
-    }
-}
-
-// all publish tasks depend on the build task
-tasks.withType(PublishToMavenRepository) {
-    dependsOn build
-}
-
-
-task myWrapper(type: Wrapper) {
-    gradleVersion = '6.6.1'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
-}
-
