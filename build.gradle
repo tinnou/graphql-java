@@ -1,16 +1,15 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id 'java'
-    id 'java-library'
-    id 'maven-publish'
-    id 'antlr'
-    id 'signing'
-    id "com.github.johnrengelman.shadow" version "6.1.0"
-    id "biz.aQute.bnd.builder" version "5.1.2"
-    id "io.github.gradle-nexus.publish-plugin" version "1.0.0"
+    id "com.github.johnrengelman.shadow" version "6.1.0" apply false
 }
 
+apply plugin: 'netflix.nebula'
+apply plugin: 'nebula.release'
+apply plugin: 'java'
+apply plugin: 'java-library'
+apply plugin: 'antlr'
+apply plugin: "com.github.johnrengelman.shadow"
 
 def getDevelopmentVersion() {
     def gitCheckOutput = new StringBuilder()
@@ -49,9 +48,17 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 def reactiveStreamsVersion = '1.0.2'
 def slf4jVersion = '1.7.30'
-def releaseVersion = System.env.RELEASE_VERSION
 def antlrVersion = '4.9.2'
-version = releaseVersion ? releaseVersion : getDevelopmentVersion()
+
+ext {
+    // if local build then use graphql-java versioning scheme, on CI server use Nebula
+    // env variable ROCKET_REPO_NAME is set by RocketCI
+    isLocalBuild = !System.getenv().containsKey("ROCKET_REPO_NAME")
+    if (isLocalBuild) {
+        project.version = getDevelopmentVersion()
+    }
+}
+
 group = 'com.graphql-java'
 
 gradle.buildFinished { buildResult ->
@@ -135,25 +142,6 @@ shadowJar {
     manifest {
         attributes('Automatic-Module-Name': 'com.graphqljava')
     }
-    //Apply biz.aQute.bnd.builder plugin logic to shadowJar as in BndBuilderPlugin 
-    convention.plugins.bundle = new aQute.bnd.gradle.BundleTaskConvention(it)
-    doLast {
-        //Call bnd after the ShadowJar was built to update the MANIFEST.MF
-        buildBundle()
-    }
-
-    //Configure bnd for shadowJar
-    // -exportcontents: graphql.*  Adds all packages of graphql and below to the exported packages list
-    // -removeheaders:  Private-Package Removes the MANIFEST.MF header Private-Package, which contains all the internal packages and 
-    //                                  also the repackaged pckages like guava, which would be wrong after repackaging.
-    // Import-Package:  Changes the imported packages header, to exclude guava and dependencies from the import list (! excludes packages)
-    //                  Guava was repackaged and included inside the jar, so we need remove it.
-    //                  The last ,* copies all the existing imports from the other dependencies, which is required.
-    bnd('''
--exportcontents: graphql.*
--removeheaders: Private-Package
-Import-Package: !com.google.*,!org.checkerframework.*,!javax.annotation.*,!graphql.com.google.*,*
-''')
 }
 
 
@@ -221,84 +209,7 @@ allprojects {
     }
 }
 
-publishing {
-
-    publications {
-
-        graphqlJava(MavenPublication) {
-            version version
-            from components.java
-
-            artifact sourcesJar {
-                classifier "sources"
-            }
-            artifact javadocJar {
-                classifier "javadoc"
-            }
-            pom.withXml {
-                // The ANTLR-related code below--introduced in `1ac98bf`--addresses an issue with
-                // the Gradle ANTLR plugin. `1ac98bf` can be reverted and this comment removed once
-                // that issue is fixed and Gradle upgraded. See https://goo.gl/L92KiF and https://goo.gl/FY0PVR.
-                //
-                // We are removing here guava because the classes we want to use is "shaded" into the jar itself
-                // via the shadowJar task
-                def pomNode = asNode()
-                pomNode.dependencies.'*'.findAll() {
-                    it.artifactId.text() == 'antlr4' || it.artifactId.text() == 'guava'
-                }.each() {
-                    it.parent().remove(it)
-                }
-                pomNode.children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
-                    name 'graphql-java'
-                    description 'GraphqL Java'
-                    url "https://github.com/graphql-java/graphql-java"
-                    scm {
-                        url "https://github.com/graphql-java/graphql-java"
-                        connection "https://github.com/graphql-java/graphql-java"
-                        developerConnection "https://github.com/graphql-java/graphql-java"
-                    }
-                    licenses {
-                        license {
-                            name 'MIT'
-                            url 'https://github.com/graphql-java/graphql-java/blob/master/LICENSE.md'
-                            distribution 'repo'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id 'andimarek'
-                            name 'Andreas Marek'
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            username = System.env.MAVEN_CENTRAL_USER
-            password = System.env.MAVEN_CENTRAL_PASSWORD
-        }
-    }
-}
-
-// to publish to local maven repo skip signing: ./gradlew publishToMavenLocal  -x signGraphqlJavaPublication
-signing {
-    def signingKey = System.env.MAVEN_CENTRAL_PGP_KEY
-    useInMemoryPgpKeys(signingKey, "")
-    sign publishing.publications
-}
-
-
-// all publish tasks depend on the build task
-tasks.withType(PublishToMavenRepository) {
-    dependsOn build
-}
-
-test {
-    useJUnitPlatform()
+nebulaRelease {
+    releaseBranchPatterns = [/17\.x/] as Set
+    excludeBranchPatterns = [] as Set
 }
