@@ -43,6 +43,8 @@ def slf4jVersion = '1.7.30'
 ext {
     // if local build then use graphql-java versioning scheme, on CI server use Nebula
     // env variable ROCKET_REPO_NAME is set by RocketCI
+    rocketRepoName = System.getenv().get("ROCKET_REPO_NAME")
+    println "Rocket Repo Name: $rocketRepoName"
     isLocalBuild = !System.getenv().containsKey("ROCKET_REPO_NAME")
     if (isLocalBuild) {
         project.version = getDevelopmentVersion()
