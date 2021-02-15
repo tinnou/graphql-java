@@ -131,11 +131,6 @@
             "locked": "1.7.30"
         }
     },
-    "repositoryContentDescriptorMavenModules": {
-        "netflix.nebula.repositorycontent:repository-content-descriptor-maven-modules": {
-            "locked": "0.15.4"
-        }
-    },
     "resolutionRules": {
         "com.netflix.nebula:gradle-resolution-rules": {
             "locked": "0.66.3"
