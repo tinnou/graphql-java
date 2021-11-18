@@ -791,4 +791,33 @@ type Query {
         newSchema.getObjectType("__Field") == null
 
     }
+
+    def "delete field should not delete referenced type"() {
+        def sdl = '''
+            type Query {
+                id: String
+                toDelete: Bar
+            }
+            
+            type Bar {
+                id: String
+            }
+           
+        '''
+        def schema = TestUtil.schema(sdl)
+
+        when:
+        GraphQLSchema newSchema = new SchemaTransformer().transform(schema, new GraphQLTypeVisitorStub() {
+
+            @Override
+            TraversalControl visitGraphQLFieldDefinition(GraphQLFieldDefinition node, TraverserContext<GraphQLSchemaElement> context) {
+                if (node.getName().equals('toDelete')) {
+                    return deleteNode(context)
+                }
+                return TraversalControl.CONTINUE
+            }
+        })
+        then:
+        newSchema.containsType("Bar")
+    }
 }
