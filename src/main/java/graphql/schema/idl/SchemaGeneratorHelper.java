@@ -681,7 +681,7 @@ public class SchemaGeneratorHelper {
         });
 
         extensions.forEach(extension -> extension.getImplements().forEach(type -> {
-            GraphQLInterfaceType interfaceType = buildOutputType(buildCtx, type);
+            GraphQLNamedOutputType interfaceType = buildOutputType(buildCtx, type);
             if (!interfaces.containsKey(interfaceType.getName())) {
                 interfaces.put(interfaceType.getName(), interfaceType);
             }
@@ -790,7 +790,7 @@ public class SchemaGeneratorHelper {
         });
 
         extensions.forEach(extension -> extension.getImplements().forEach(type -> {
-            GraphQLInterfaceType interfaceType = buildOutputType(buildCtx, type);
+            GraphQLNamedOutputType interfaceType = buildOutputType(buildCtx, type);
             if (!interfaces.containsKey(interfaceType.getName())) {
                 interfaces.put(interfaceType.getName(), interfaceType);
             }
