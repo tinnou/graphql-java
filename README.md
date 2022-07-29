@@ -7,7 +7,6 @@ This is a [GraphQL](https://github.com/graphql/graphql-spec) Java implementation
 [![Build](https://github.com/graphql-java/graphql-java/actions/workflows/master.yml/badge.svg)](https://github.com/graphql-java/graphql-java/actions/workflows/master.yml)
 [![Latest Release](https://maven-badges.herokuapp.com/maven-central/com.graphql-java/graphql-java/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.graphql-java/graphql-java/)
 
-
 ### Documentation
 
 We have a tutorial for beginners: [Getting started with GraphQL Java and Spring Boot](https://www.graphql-java.com/tutorials/getting-started-with-spring-boot/)
