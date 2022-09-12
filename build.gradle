@@ -50,9 +50,7 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
 
 def reactiveStreamsVersion = '1.0.3'
 def slf4jVersion = '1.7.35'
-def releaseVersion = System.env.RELEASE_VERSION
 def antlrVersion = '4.9.3' // https://mvnrepository.com/artifact/org.antlr/antlr4-runtime
-version = releaseVersion ? releaseVersion : getDevelopmentVersion()
 
 ext {
     // if local build then use graphql-java versioning scheme, on CI server use Nebula
