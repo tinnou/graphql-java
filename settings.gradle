@@ -14,4 +14,3 @@ pluginManagement {
 }
 
 rootProject.name = 'graphql-java'
-include("agent", "agent-test")
