@@ -1,17 +1,20 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id 'java'
-    id 'java-library'
-    id 'maven-publish'
-    id 'antlr'
-    id 'signing'
-    id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "biz.aQute.bnd.builder" version "6.1.0"
-    id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
-    id "groovy"
-    id "me.champeau.jmh" version "0.6.6"
+    id "biz.aQute.bnd.builder" version "6.1.0" apply false
+    id "com.github.johnrengelman.shadow" version "6.1.0" apply false
+    id "me.champeau.jmh" version "0.6.6" apply false
 }
+
+apply plugin: 'netflix.nebula'
+apply plugin: 'nebula.release'
+apply plugin: 'java'
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: 'antlr'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'biz.aQute.bnd.builder'
+apply plugin: 'me.champeau.jmh'
 
 def getDevelopmentVersion() {
     def gitCheckOutput = new StringBuilder()
@@ -45,14 +48,21 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
     throw new GradleException(msg)
 }
 
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 def reactiveStreamsVersion = '1.0.3'
 def slf4jVersion = '1.7.35'
 def releaseVersion = System.env.RELEASE_VERSION
 def antlrVersion = '4.9.3' // https://mvnrepository.com/artifact/org.antlr/antlr4-runtime
 version = releaseVersion ? releaseVersion : getDevelopmentVersion()
+
+ext {
+    // if local build then use graphql-java versioning scheme, on CI server use Nebula
+    // env variable ROCKET_REPO_NAME is set by RocketCI
+    isLocalBuild = !System.getenv().containsKey("ROCKET_REPO_NAME")
+    if (isLocalBuild) {
+        project.version = getDevelopmentVersion()
+    }
+}
+
 group = 'com.graphql-java'
 
 gradle.buildFinished { buildResult ->
@@ -172,9 +182,7 @@ task removeNotNeededGuava(type: Zip) {
     }
 }
 
-
 shadowJar.finalizedBy removeNotNeededGuava
-
 
 task testng(type: Test) {
     useTestNG()
@@ -228,84 +236,6 @@ allprojects {
     }
 }
 
-publishing {
-
-    publications {
-
-        graphqlJava(MavenPublication) {
-            version version
-            from components.java
-
-            artifact sourcesJar {
-                classifier "sources"
-            }
-            artifact javadocJar {
-                classifier "javadoc"
-            }
-            pom.withXml {
-                // Removing antlr4 below (introduced in `1ac98bf`) addresses an issue with
-                // the Gradle ANTLR plugin. `1ac98bf` can be reverted and this comment removed once
-                // that issue is fixed and Gradle upgraded. See https://goo.gl/L92KiF and https://goo.gl/FY0PVR.
-                //
-                // Removing antlr4-runtime and guava because the classes we want to use are "shaded" into the jar itself
-                // via the shadowJar task
-                def pomNode = asNode()
-                pomNode.dependencies.'*'.findAll() {
-                    it.artifactId.text() == 'antlr4' || it.artifactId.text() == 'antlr4-runtime' || it.artifactId.text() == 'guava'
-                }.each() {
-                    it.parent().remove(it)
-                }
-                pomNode.children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
-                    name 'graphql-java'
-                    description 'GraphqL Java'
-                    url "https://github.com/graphql-java/graphql-java"
-                    scm {
-                        url "https://github.com/graphql-java/graphql-java"
-                        connection "https://github.com/graphql-java/graphql-java"
-                        developerConnection "https://github.com/graphql-java/graphql-java"
-                    }
-                    licenses {
-                        license {
-                            name 'MIT'
-                            url 'https://github.com/graphql-java/graphql-java/blob/master/LICENSE.md'
-                            distribution 'repo'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id 'andimarek'
-                            name 'Andreas Marek'
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            username = System.env.MAVEN_CENTRAL_USER
-            password = System.env.MAVEN_CENTRAL_PASSWORD
-        }
-    }
-}
-
-// to publish to local maven repo skip signing: ./gradlew publishToMavenLocal  -x signGraphqlJavaPublication
-signing {
-    def signingKey = System.env.MAVEN_CENTRAL_PGP_KEY
-    useInMemoryPgpKeys(signingKey, "")
-    sign publishing.publications
-}
-
-
-// all publish tasks depend on the build task
-tasks.withType(PublishToMavenRepository) {
-    dependsOn build
-}
-
 // Only publish Maven POM, disable default Gradle modules file
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
@@ -313,4 +243,9 @@ tasks.withType(GenerateModuleMetadata) {
 
 test {
     useJUnitPlatform()
+}
+
+nebulaRelease {
+    releaseBranchPatterns = [/19\.x/] as Set
+    excludeBranchPatterns = [] as Set
 }
