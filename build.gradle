@@ -2,14 +2,14 @@ import java.text.SimpleDateFormat
 
 plugins {
     id "biz.aQute.bnd.builder" version "6.1.0" apply false
-    id "com.github.johnrengelman.shadow" version "6.1.0" apply false
+    id 'com.github.johnrengelman.shadow' version '7.1.0' apply false
     id "me.champeau.jmh" version "0.6.6" apply false
 }
 
 apply plugin: 'netflix.nebula'
 apply plugin: 'nebula.release'
 apply plugin: 'java'
-apply plugin: 'java-library'
+apply plugin: 'netflix.jvm-library'
 apply plugin: 'maven-publish'
 apply plugin: 'antlr'
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -77,7 +77,6 @@ gradle.buildFinished { buildResult ->
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
 }
 
