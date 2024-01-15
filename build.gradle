@@ -17,6 +17,12 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'biz.aQute.bnd.builder'
 apply plugin: 'me.champeau.jmh'
 
+def makeDevelopmentVersion(parts) {
+    def version = String.join("-", parts)
+    println "created development version: $version"
+    return version
+}
+
 def getDevelopmentVersion() {
     def dateTime = new SimpleDateFormat('yyyy-MM-dd\'T\'HH-mm-ss').format(new Date())
     def gitCheckOutput = new StringBuilder()
@@ -54,10 +60,8 @@ def getDevelopmentVersion() {
 
 def reactiveStreamsVersion = '1.0.3'
 def slf4jVersion = '2.0.7'
-def releaseVersion = System.env.RELEASE_VERSION
 def antlrVersion = '4.11.1' // https://mvnrepository.com/artifact/org.antlr/antlr4-runtime
 def guavaVersion = '32.1.2-jre'
-version = releaseVersion ? releaseVersion : getDevelopmentVersion()
 
 ext {
     // if local build then use graphql-java versioning scheme, on CI server use Nebula
@@ -201,8 +205,6 @@ task buildNewJar(type: Jar) {
 buildNewJar.dependsOn extractWithoutGuava
 
 shadowJar.finalizedBy extractWithoutGuava, buildNewJar
-
-shadowJar.finalizedBy removeNotNeededGuava
 
 task testng(type: Test) {
     useTestNG()
