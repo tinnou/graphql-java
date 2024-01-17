@@ -17,6 +17,16 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'biz.aQute.bnd.builder'
 apply plugin: 'me.champeau.jmh'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+nebulaJavaVersionCheck {
+    acceptResponsibilityForPossiblyPoisoningTheNetflixGraphByUsingNewerJDK = true
+}
+
 def makeDevelopmentVersion(parts) {
     def version = String.join("-", parts)
     println "created development version: $version"
@@ -104,6 +114,7 @@ jar {
 }
 
 dependencies {
+    testImplementation 'org.jetbrains:annotations:23.0.0'
     compileOnly 'org.jetbrains:annotations:24.1.0'
     implementation 'org.antlr:antlr4-runtime:' + antlrVersion
     implementation 'org.slf4j:slf4j-api:' + slf4jVersion
