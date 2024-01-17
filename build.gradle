@@ -299,6 +299,6 @@ test {
 }
 
 nebulaRelease {
-    releaseBranchPatterns = [/19\.x/] as Set
+    releaseBranchPatterns = [/21\.x/] as Set
     excludeBranchPatterns = [] as Set
 }
