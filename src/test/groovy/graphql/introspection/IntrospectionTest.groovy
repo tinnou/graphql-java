@@ -1,6 +1,8 @@
 package graphql.introspection
 
+import graphql.ExecutionInput
 import graphql.TestUtil
+import graphql.execution.AsyncSerialExecutionStrategy
 import graphql.schema.DataFetcher
 import graphql.schema.FieldCoordinates
 import graphql.schema.GraphQLCodeRegistry
@@ -11,8 +13,21 @@ import spock.lang.See
 import spock.lang.Specification
 
 import static graphql.GraphQL.newGraphQL
+import static graphql.Scalars.GraphQLString
+import static graphql.schema.GraphQLArgument.newArgument
+import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
+import static graphql.schema.GraphQLObjectType.newObject
+import static graphql.schema.GraphQLSchema.newSchema
 
 class IntrospectionTest extends Specification {
+
+    def setup() {
+        Introspection.enabledJvmWide(true)
+    }
+
+    def cleanup() {
+        Introspection.enabledJvmWide(true)
+    }
 
     def "bug 1186 - introspection depth check"() {
         def spec = '''
@@ -353,4 +368,134 @@ class IntrospectionTest extends Specification {
         then:
         queryTypeFields == [[name: "inA"], [name: "inB"], [name: "inC"]]
     }
+
+    def "issue 3285 - deprecated defaultValue on programmatic args prints AST literal as expected"() {
+        def queryObjType = newObject().name("Query")
+                .field(newFieldDefinition().name("f").type(GraphQLString)
+                        .argument(newArgument().name("arg").type(GraphQLString).defaultValue(null)))
+                .build()
+        def schema = newSchema().query(queryObjType).build()
+        def graphQL = newGraphQL(schema).build()
+
+
+        when:
+        def executionResult = graphQL.execute(IntrospectionQuery.INTROSPECTION_QUERY)
+        then:
+        executionResult.errors.isEmpty()
+
+        def types = executionResult.data['__schema']['types'] as List
+        def queryType = types.find { it['name'] == 'Query' }
+        def fField = (queryType['fields'] as List)[0]
+        def arg = (fField['args'] as List)[0]
+        arg['name'] == "arg"
+        arg['defaultValue'] == "null" // printed AST
+    }
+
+    def "jvm wide enablement"() {
+        def graphQL = TestUtil.graphQL("type Query { f : String } ").build()
+
+        when:
+        def er = graphQL.execute(IntrospectionQuery.INTROSPECTION_QUERY)
+
+        then:
+        er.errors.isEmpty()
+
+        when:
+        Introspection.enabledJvmWide(false)
+        er = graphQL.execute(IntrospectionQuery.INTROSPECTION_QUERY)
+
+        then:
+        er.errors[0] instanceof IntrospectionDisabledError
+        er.errors[0].getErrorType().toString() == "IntrospectionDisabled"
+
+        when:
+        Introspection.enabledJvmWide(true)
+        er = graphQL.execute(IntrospectionQuery.INTROSPECTION_QUERY)
+
+        then:
+        er.errors.isEmpty()
+    }
+
+    def "per request enablement"() {
+        def graphQL = TestUtil.graphQL("type Query { f : String } ").build()
+
+        when:
+        // null context
+        def ei = ExecutionInput.newExecutionInput(IntrospectionQuery.INTROSPECTION_QUERY)
+                .build()
+        def er = graphQL.execute(ei)
+
+        then:
+        er.errors.isEmpty()
+
+        when:
+        ei = ExecutionInput.newExecutionInput(IntrospectionQuery.INTROSPECTION_QUERY)
+                .graphQLContext(["INTROSPECTION_DISABLED": false]).build()
+        er = graphQL.execute(ei)
+
+        then:
+        er.errors.isEmpty()
+
+        when:
+        ei = ExecutionInput.newExecutionInput(IntrospectionQuery.INTROSPECTION_QUERY)
+                .graphQLContext(["INTROSPECTION_DISABLED": true]).build()
+        er = graphQL.execute(ei)
+
+        then:
+        er.errors[0] instanceof IntrospectionDisabledError
+        er.errors[0].getErrorType().toString() == "IntrospectionDisabled"
+    }
+
+    def "mixed schema and other fields stop early"() {
+        def graphQL = TestUtil.graphQL("type Query { normalField : String } ").build()
+
+        def query = """
+            query goodAndBad {
+                normalField
+                __schema{ types{ fields { name }}}
+            }
+        """
+
+        when:
+        def er = graphQL.execute(query)
+
+        then:
+        er.errors.isEmpty()
+
+        when:
+        Introspection.enabledJvmWide(false)
+        er = graphQL.execute(query)
+
+        then:
+        er.errors[0] instanceof IntrospectionDisabledError
+        er.errors[0].getErrorType().toString() == "IntrospectionDisabled"
+        er.data == null // stops hard
+    }
+
+    def "AsyncSerialExecutionStrategy with jvm wide enablement"() {
+        def graphQL = TestUtil.graphQL("type Query { f : String } ")
+                .queryExecutionStrategy(new AsyncSerialExecutionStrategy()).build()
+
+        when:
+        def er = graphQL.execute(IntrospectionQuery.INTROSPECTION_QUERY)
+
+        then:
+        er.errors.isEmpty()
+
+        when:
+        Introspection.enabledJvmWide(false)
+        er = graphQL.execute(IntrospectionQuery.INTROSPECTION_QUERY)
+
+        then:
+        er.errors[0] instanceof IntrospectionDisabledError
+        er.errors[0].getErrorType().toString() == "IntrospectionDisabled"
+
+        when:
+        Introspection.enabledJvmWide(true)
+        er = graphQL.execute(IntrospectionQuery.INTROSPECTION_QUERY)
+
+        then:
+        er.errors.isEmpty()
+    }
+
 }
