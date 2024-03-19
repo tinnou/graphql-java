@@ -2,7 +2,7 @@ import java.text.SimpleDateFormat
 
 plugins {
     id "biz.aQute.bnd.builder" version "6.1.0" apply false
-    id "com.github.johnrengelman.shadow" version "6.1.0" apply false
+    id 'com.github.johnrengelman.shadow' version '7.1.0' apply false
     id "me.champeau.jmh" version "0.6.6" apply false
 }
 
@@ -10,6 +10,7 @@ apply plugin: 'netflix.nebula'
 apply plugin: 'nebula.release'
 apply plugin: 'java'
 apply plugin: 'java-library'
+apply plugin: 'netflix.jvm-library'
 apply plugin: 'maven-publish'
 apply plugin: 'antlr'
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -50,7 +51,6 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
 
 def reactiveStreamsVersion = '1.0.3'
 def slf4jVersion = '1.7.35'
-def releaseVersion = System.env.RELEASE_VERSION
 def antlrVersion = '4.9.3' // https://mvnrepository.com/artifact/org.antlr/antlr4-runtime
 def guavaVersion = '32.1.1-jre'
 version = releaseVersion ? releaseVersion : getDevelopmentVersion()
@@ -80,7 +80,6 @@ gradle.buildFinished { buildResult ->
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
 }
 
@@ -169,7 +168,6 @@ shadowJar {
 Import-Package: !com.google.*,!org.checkerframework.*,!javax.annotation.*,!graphql.com.google.*,!org.antlr.*,!graphql.org.antlr.*,!sun.misc.*,*
 ''')
 }
-
 
 task removeNotNeededGuava(type: Zip) {
     from({ zipTree({ "build/libs/graphql-java-${project.version}.jar" }) }) {
