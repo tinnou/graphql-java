@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat
 plugins {
     id "biz.aQute.bnd.builder" version "6.1.0" apply false
     id 'com.github.johnrengelman.shadow' version '7.1.0' apply false
-    id "me.champeau.jmh" version "0.6.6" apply false
+    id "me.champeau.jmh" version "0.7.0" apply false
 }
 
 apply plugin: 'netflix.nebula'
@@ -200,15 +200,8 @@ generateGrammarSource {
 }
 generateGrammarSource.inputs.dir('src/main/antlr')
 
-
-task sourcesJar(type: Jar) {
-    dependsOn classes
-    classifier 'sources'
-    from sourceSets.main.allSource
-}
-
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from javadoc.destinationDir
 }
 
