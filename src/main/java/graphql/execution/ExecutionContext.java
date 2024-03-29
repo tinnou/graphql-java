@@ -56,6 +56,7 @@ public class ExecutionContext {
     private final ValueUnboxer valueUnboxer;
     private final ExecutionInput executionInput;
     private final Supplier<ExecutableNormalizedOperation> queryTree;
+    private final ResultNodesInfo resultNodesInfo = new ResultNodesInfo();
 
     ExecutionContext(ExecutionContextBuilder builder) {
         this.graphQLSchema = builder.graphQLSchema;
@@ -78,7 +79,7 @@ public class ExecutionContext {
         this.errors.set(builder.errors);
         this.localContext = builder.localContext;
         this.executionInput = builder.executionInput;
-        queryTree = FpKit.interThreadMemoize(() -> ExecutableNormalizedOperationFactory.createExecutableNormalizedOperation(graphQLSchema, operationDefinition, fragmentsByName, coercedVariables));
+        this.queryTree = FpKit.interThreadMemoize(() -> ExecutableNormalizedOperationFactory.createExecutableNormalizedOperation(graphQLSchema, operationDefinition, fragmentsByName, coercedVariables));
     }
 
 
@@ -281,5 +282,9 @@ public class ExecutionContext {
         ExecutionContextBuilder builder = ExecutionContextBuilder.newExecutionContextBuilder(this);
         builderConsumer.accept(builder);
         return builder.build();
+    }
+
+    public ResultNodesInfo getResultNodesInfo() {
+        return resultNodesInfo;
     }
 }
