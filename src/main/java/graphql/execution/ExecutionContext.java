@@ -3,7 +3,6 @@ package graphql.execution;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import graphql.DeprecatedAt;
 import graphql.ExecutionInput;
 import graphql.GraphQLContext;
 import graphql.GraphQLError;
@@ -121,8 +120,7 @@ public class ExecutionContext {
      *
      * @deprecated use {@link #getCoercedVariables()} instead
      */
-    @Deprecated
-    @DeprecatedAt("2022-05-24")
+    @Deprecated(since = "2022-05-24")
     public Map<String, Object> getVariables() {
         return coercedVariables.toMap();
     }
@@ -138,8 +136,7 @@ public class ExecutionContext {
      *
      * @deprecated use {@link #getGraphQLContext()} instead
      */
-    @Deprecated
-    @DeprecatedAt("2021-07-05")
+    @Deprecated(since = "2021-07-05")
     @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public <T> T getContext() {
         return (T) context;
