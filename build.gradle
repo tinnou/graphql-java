@@ -169,6 +169,7 @@ Import-Package: !com.google.*,!org.checkerframework.*,!javax.annotation.*,!graph
 }
 
 task removeNotNeededGuava(type: Zip) {
+    dependsOn(("build/libs/graphql-java-${project.version}.jar"))
     from({ zipTree({ "build/libs/graphql-java-${project.version}.jar" }) }) {
         exclude('/com/**')
     }
