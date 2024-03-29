@@ -262,6 +262,7 @@ public class ExecutableNormalizedOperationFactory {
      * @param operationDefinition   the operation to be executed
      * @param fragments             a set of fragments associated with the operation
      * @param coercedVariableValues the coerced variables to use
+     * @param options               options to include
      *
      * @return a runtime representation of the graphql operation.
      */
