@@ -35,14 +35,6 @@ if [ "x$GRADLE_USER_HOME" = "x" ]; then
 fi
 
 
-# Netflix: Attempt to use $WORKSPACE/.gradle if we're not told otherwise
-if [ "x$GRADLE_USER_HOME" = "x" ]; then
-    if [ "x$WORKSPACE" != "x" ]; then
-        export GRADLE_USER_HOME="$WORKSPACE/.gradle"
-    fi
-fi
-
-
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 DEFAULT_JVM_OPTS=""
 
@@ -179,11 +171,6 @@ APP_ARGS=$(save "$@")
 
 # Collect all arguments for the java command, following the shell quoting and substitution rules
 eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS "\"-Dorg.gradle.appname=$APP_BASE_NAME\"" -classpath "\"$CLASSPATH\"" org.gradle.wrapper.GradleWrapperMain "$APP_ARGS"
-
-# by default we should be in the correct project dir, but when run from Finder on Mac, the cwd is wrong
-if [ "$(uname)" = "Darwin" ] && [ "$HOME" = "$PWD" ]; then
-  cd "$(dirname "$0")"
-fi
 
 # by default we should be in the correct project dir, but when run from Finder on Mac, the cwd is wrong
 if [ "$(uname)" = "Darwin" ] && [ "$HOME" = "$PWD" ]; then
