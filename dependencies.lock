@@ -54,7 +54,7 @@
             ]
         },
         "com.google.errorprone:error_prone_annotations": {
-            "locked": "2.7.1",
+            "locked": "2.18.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -66,7 +66,7 @@
             ]
         },
         "com.google.guava:guava": {
-            "locked": "31.0.1-jre"
+            "locked": "32.1.1-jre"
         },
         "com.google.guava:listenablefuture": {
             "locked": "9999.0-empty-to-avoid-conflict-with-guava",
@@ -75,7 +75,7 @@
             ]
         },
         "com.google.j2objc:j2objc-annotations": {
-            "locked": "1.3",
+            "locked": "2.8",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -118,7 +118,7 @@
             ]
         },
         "org.checkerframework:checker-qual": {
-            "locked": "3.12.0",
+            "locked": "3.33.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -156,7 +156,7 @@
             ]
         },
         "org.openjdk.jmh:jmh-core": {
-            "locked": "1.35",
+            "locked": "1.36",
             "transitive": [
                 "org.openjdk.jmh:jmh-generator-annprocess",
                 "org.openjdk.jmh:jmh-generator-asm",
@@ -168,16 +168,16 @@
             "locked": "1.35"
         },
         "org.openjdk.jmh:jmh-generator-asm": {
-            "locked": "1.29",
+            "locked": "1.36",
             "transitive": [
                 "org.openjdk.jmh:jmh-generator-bytecode"
             ]
         },
         "org.openjdk.jmh:jmh-generator-bytecode": {
-            "locked": "1.29"
+            "locked": "1.36"
         },
         "org.openjdk.jmh:jmh-generator-reflection": {
-            "locked": "1.29",
+            "locked": "1.36",
             "transitive": [
                 "org.openjdk.jmh:jmh-generator-asm",
                 "org.openjdk.jmh:jmh-generator-bytecode"
@@ -198,7 +198,7 @@
             ]
         },
         "com.google.errorprone:error_prone_annotations": {
-            "locked": "2.7.1",
+            "locked": "2.18.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -210,7 +210,7 @@
             ]
         },
         "com.google.guava:guava": {
-            "locked": "31.0.1-jre"
+            "locked": "32.1.1-jre"
         },
         "com.google.guava:listenablefuture": {
             "locked": "9999.0-empty-to-avoid-conflict-with-guava",
@@ -219,7 +219,7 @@
             ]
         },
         "com.google.j2objc:j2objc-annotations": {
-            "locked": "1.3",
+            "locked": "2.8",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -274,7 +274,7 @@
             ]
         },
         "org.checkerframework:checker-qual": {
-            "locked": "3.12.0",
+            "locked": "3.33.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -289,7 +289,7 @@
             "locked": "23.0.0"
         },
         "org.openjdk.jmh:jmh-core": {
-            "locked": "1.35",
+            "locked": "1.36",
             "transitive": [
                 "org.openjdk.jmh:jmh-generator-annprocess",
                 "org.openjdk.jmh:jmh-generator-asm",
@@ -301,16 +301,16 @@
             "locked": "1.35"
         },
         "org.openjdk.jmh:jmh-generator-asm": {
-            "locked": "1.29",
+            "locked": "1.36",
             "transitive": [
                 "org.openjdk.jmh:jmh-generator-bytecode"
             ]
         },
         "org.openjdk.jmh:jmh-generator-bytecode": {
-            "locked": "1.29"
+            "locked": "1.36"
         },
         "org.openjdk.jmh:jmh-generator-reflection": {
-            "locked": "1.29",
+            "locked": "1.36",
             "transitive": [
                 "org.openjdk.jmh:jmh-generator-asm",
                 "org.openjdk.jmh:jmh-generator-bytecode"
@@ -335,6 +335,12 @@
     "jmhRuntimeClasspath": {
         "cglib:cglib-nodep": {
             "locked": "3.3.0"
+        },
+        "com.atomicjar:testcontainers-cloud-provider-strategy": {
+            "locked": "0.0.29",
+            "transitive": [
+                "com.netflix.nebula.testcontainers:testcontainers-cloud-configurer"
+            ]
         },
         "com.beust:jcommander": {
             "locked": "1.78",
@@ -375,14 +381,15 @@
         "com.google.code.findbugs:jsr305": {
             "locked": "3.0.2",
             "transitive": [
-                "com.google.guava:guava"
+                "com.google.guava:guava",
+                "org.testng:testng"
             ]
         },
         "com.google.code.gson:gson": {
             "locked": "2.8.9"
         },
         "com.google.errorprone:error_prone_annotations": {
-            "locked": "2.7.1",
+            "locked": "2.18.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -394,7 +401,7 @@
             ]
         },
         "com.google.guava:guava": {
-            "locked": "31.0.1-jre"
+            "locked": "32.1.1-jre"
         },
         "com.google.guava:listenablefuture": {
             "locked": "9999.0-empty-to-avoid-conflict-with-guava",
@@ -403,10 +410,16 @@
             ]
         },
         "com.google.j2objc:j2objc-annotations": {
-            "locked": "1.3",
+            "locked": "2.8",
             "transitive": [
                 "com.google.guava:guava"
             ]
+        },
+        "com.gradle:develocity-testing-annotations": {
+            "locked": "2.0"
+        },
+        "com.gradle:gradle-enterprise-testing-annotations": {
+            "locked": "1.0"
         },
         "com.graphql-java:java-dataloader": {
             "locked": "3.2.0"
@@ -416,6 +429,9 @@
             "transitive": [
                 "org.antlr:antlr4"
             ]
+        },
+        "com.netflix.nebula.testcontainers:testcontainers-cloud-configurer": {
+            "locked": "1.10.0"
         },
         "com.thoughtworks.qdox:qdox": {
             "locked": "1.12.1",
@@ -529,10 +545,11 @@
             ]
         },
         "org.apiguardian:apiguardian-api": {
-            "locked": "1.1.0",
+            "locked": "1.1.2",
             "transitive": [
                 "org.junit.platform:junit-platform-commons",
-                "org.junit.platform:junit-platform-engine"
+                "org.junit.platform:junit-platform-engine",
+                "org.junit.platform:junit-platform-launcher"
             ]
         },
         "org.awaitility:awaitility": {
@@ -545,7 +562,7 @@
             "locked": "3.1.6"
         },
         "org.checkerframework:checker-qual": {
-            "locked": "3.12.0",
+            "locked": "3.33.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -772,27 +789,27 @@
             ]
         },
         "org.junit.jupiter:junit-jupiter-api": {
-            "locked": "5.7.2",
+            "locked": "5.10.2",
             "transitive": [
                 "org.codehaus.groovy:groovy-test-junit5",
                 "org.junit.jupiter:junit-jupiter-engine"
             ]
         },
         "org.junit.jupiter:junit-jupiter-engine": {
-            "locked": "5.7.2",
+            "locked": "5.10.2",
             "transitive": [
                 "org.codehaus.groovy:groovy-test-junit5"
             ]
         },
         "org.junit.platform:junit-platform-commons": {
-            "locked": "1.7.2",
+            "locked": "1.10.2",
             "transitive": [
                 "org.junit.jupiter:junit-jupiter-api",
                 "org.junit.platform:junit-platform-engine"
             ]
         },
         "org.junit.platform:junit-platform-engine": {
-            "locked": "1.7.2",
+            "locked": "1.10.2",
             "transitive": [
                 "org.junit.jupiter:junit-jupiter-engine",
                 "org.junit.platform:junit-platform-launcher",
@@ -800,7 +817,7 @@
             ]
         },
         "org.junit.platform:junit-platform-launcher": {
-            "locked": "1.7.2",
+            "locked": "1.10.2",
             "transitive": [
                 "org.codehaus.groovy:groovy-test-junit5"
             ]
@@ -812,7 +829,7 @@
             ]
         },
         "org.openjdk.jmh:jmh-core": {
-            "locked": "1.35",
+            "locked": "1.36",
             "transitive": [
                 "org.openjdk.jmh:jmh-generator-annprocess",
                 "org.openjdk.jmh:jmh-generator-asm",
@@ -824,23 +841,23 @@
             "locked": "1.35"
         },
         "org.openjdk.jmh:jmh-generator-asm": {
-            "locked": "1.29",
+            "locked": "1.36",
             "transitive": [
                 "org.openjdk.jmh:jmh-generator-bytecode"
             ]
         },
         "org.openjdk.jmh:jmh-generator-bytecode": {
-            "locked": "1.29"
+            "locked": "1.36"
         },
         "org.openjdk.jmh:jmh-generator-reflection": {
-            "locked": "1.29",
+            "locked": "1.36",
             "transitive": [
                 "org.openjdk.jmh:jmh-generator-asm",
                 "org.openjdk.jmh:jmh-generator-bytecode"
             ]
         },
         "org.opentest4j:opentest4j": {
-            "locked": "1.2.0",
+            "locked": "1.3.0",
             "transitive": [
                 "org.junit.jupiter:junit-jupiter-api",
                 "org.junit.platform:junit-platform-engine"
@@ -883,7 +900,7 @@
             "locked": "2.0-groovy-3.0"
         },
         "org.testng:testng": {
-            "locked": "7.4.0",
+            "locked": "7.5.1",
             "transitive": [
                 "org.codehaus.groovy:groovy-testng",
                 "org.reactivestreams:reactive-streams-tck"
@@ -898,10 +915,10 @@
     },
     "resolutionRules": {
         "com.netflix.nebula:gradle-resolution-rules": {
-            "locked": "0.76.0"
+            "locked": "0.81.0"
         },
         "netflix.nebula.resolutionrules:resolution-rules": {
-            "locked": "1.232.0"
+            "locked": "1.296.0"
         }
     },
     "runtimeClasspath": {
@@ -912,7 +929,7 @@
             ]
         },
         "com.google.errorprone:error_prone_annotations": {
-            "locked": "2.7.1",
+            "locked": "2.18.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -924,7 +941,7 @@
             ]
         },
         "com.google.guava:guava": {
-            "locked": "31.0.1-jre"
+            "locked": "32.1.1-jre"
         },
         "com.google.guava:listenablefuture": {
             "locked": "9999.0-empty-to-avoid-conflict-with-guava",
@@ -933,7 +950,7 @@
             ]
         },
         "com.google.j2objc:j2objc-annotations": {
-            "locked": "1.3",
+            "locked": "2.8",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -976,7 +993,7 @@
             ]
         },
         "org.checkerframework:checker-qual": {
-            "locked": "3.12.0",
+            "locked": "3.33.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -1025,7 +1042,7 @@
             "locked": "3.3.0"
         },
         "com.beust:jcommander": {
-            "locked": "1.78",
+            "locked": "1.12",
             "transitive": [
                 "org.testng:testng"
             ]
@@ -1070,7 +1087,7 @@
             "locked": "2.8.9"
         },
         "com.google.errorprone:error_prone_annotations": {
-            "locked": "2.7.1",
+            "locked": "2.18.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -1082,7 +1099,7 @@
             ]
         },
         "com.google.guava:guava": {
-            "locked": "31.0.1-jre"
+            "locked": "32.1.1-jre"
         },
         "com.google.guava:listenablefuture": {
             "locked": "9999.0-empty-to-avoid-conflict-with-guava",
@@ -1091,10 +1108,16 @@
             ]
         },
         "com.google.j2objc:j2objc-annotations": {
-            "locked": "1.3",
+            "locked": "2.8",
             "transitive": [
                 "com.google.guava:guava"
             ]
+        },
+        "com.gradle:develocity-testing-annotations": {
+            "locked": "2.0"
+        },
+        "com.gradle:gradle-enterprise-testing-annotations": {
+            "locked": "1.0"
         },
         "com.graphql-java:java-dataloader": {
             "locked": "3.2.0"
@@ -1123,7 +1146,8 @@
         "junit:junit": {
             "locked": "4.13.2",
             "transitive": [
-                "org.codehaus.groovy:groovy-test"
+                "org.codehaus.groovy:groovy-test",
+                "org.testng:testng"
             ]
         },
         "net.sf.jopt-simple:jopt-simple": {
@@ -1194,8 +1218,14 @@
         "org.awaitility:awaitility-groovy": {
             "locked": "3.1.6"
         },
+        "org.beanshell:bsh": {
+            "locked": "2.0b4",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        },
         "org.checkerframework:checker-qual": {
-            "locked": "3.12.0",
+            "locked": "3.33.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -1408,7 +1438,7 @@
             ]
         },
         "org.junit.jupiter:junit-jupiter-api": {
-            "locked": "5.7.2",
+            "locked": "5.10.2",
             "transitive": [
                 "org.codehaus.groovy:groovy-test-junit5"
             ]
@@ -1435,7 +1465,7 @@
             "locked": "1.35"
         },
         "org.opentest4j:opentest4j": {
-            "locked": "1.2.0",
+            "locked": "1.3.0",
             "transitive": [
                 "org.junit.jupiter:junit-jupiter-api",
                 "org.junit.platform:junit-platform-engine"
@@ -1472,13 +1502,13 @@
             "locked": "2.0-groovy-3.0"
         },
         "org.testng:testng": {
-            "locked": "7.4.0",
+            "locked": "6.1.1",
             "transitive": [
                 "org.reactivestreams:reactive-streams-tck"
             ]
         },
-        "org.webjars:jquery": {
-            "locked": "3.5.1",
+        "org.yaml:snakeyaml": {
+            "locked": "1.6",
             "transitive": [
                 "org.testng:testng"
             ]
@@ -1487,6 +1517,12 @@
     "testRuntimeClasspath": {
         "cglib:cglib-nodep": {
             "locked": "3.3.0"
+        },
+        "com.atomicjar:testcontainers-cloud-provider-strategy": {
+            "locked": "0.0.29",
+            "transitive": [
+                "com.netflix.nebula.testcontainers:testcontainers-cloud-configurer"
+            ]
         },
         "com.beust:jcommander": {
             "locked": "1.78",
@@ -1527,14 +1563,15 @@
         "com.google.code.findbugs:jsr305": {
             "locked": "3.0.2",
             "transitive": [
-                "com.google.guava:guava"
+                "com.google.guava:guava",
+                "org.testng:testng"
             ]
         },
         "com.google.code.gson:gson": {
             "locked": "2.8.9"
         },
         "com.google.errorprone:error_prone_annotations": {
-            "locked": "2.7.1",
+            "locked": "2.18.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -1546,7 +1583,7 @@
             ]
         },
         "com.google.guava:guava": {
-            "locked": "31.0.1-jre"
+            "locked": "32.1.1-jre"
         },
         "com.google.guava:listenablefuture": {
             "locked": "9999.0-empty-to-avoid-conflict-with-guava",
@@ -1555,10 +1592,16 @@
             ]
         },
         "com.google.j2objc:j2objc-annotations": {
-            "locked": "1.3",
+            "locked": "2.8",
             "transitive": [
                 "com.google.guava:guava"
             ]
+        },
+        "com.gradle:develocity-testing-annotations": {
+            "locked": "2.0"
+        },
+        "com.gradle:gradle-enterprise-testing-annotations": {
+            "locked": "1.0"
         },
         "com.graphql-java:java-dataloader": {
             "locked": "3.2.0"
@@ -1568,6 +1611,9 @@
             "transitive": [
                 "org.antlr:antlr4"
             ]
+        },
+        "com.netflix.nebula.testcontainers:testcontainers-cloud-configurer": {
+            "locked": "1.10.0"
         },
         "com.thoughtworks.qdox:qdox": {
             "locked": "1.12.1",
@@ -1681,10 +1727,11 @@
             ]
         },
         "org.apiguardian:apiguardian-api": {
-            "locked": "1.1.0",
+            "locked": "1.1.2",
             "transitive": [
                 "org.junit.platform:junit-platform-commons",
-                "org.junit.platform:junit-platform-engine"
+                "org.junit.platform:junit-platform-engine",
+                "org.junit.platform:junit-platform-launcher"
             ]
         },
         "org.awaitility:awaitility": {
@@ -1697,7 +1744,7 @@
             "locked": "3.1.6"
         },
         "org.checkerframework:checker-qual": {
-            "locked": "3.12.0",
+            "locked": "3.33.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
@@ -1924,27 +1971,27 @@
             ]
         },
         "org.junit.jupiter:junit-jupiter-api": {
-            "locked": "5.7.2",
+            "locked": "5.10.2",
             "transitive": [
                 "org.codehaus.groovy:groovy-test-junit5",
                 "org.junit.jupiter:junit-jupiter-engine"
             ]
         },
         "org.junit.jupiter:junit-jupiter-engine": {
-            "locked": "5.7.2",
+            "locked": "5.10.2",
             "transitive": [
                 "org.codehaus.groovy:groovy-test-junit5"
             ]
         },
         "org.junit.platform:junit-platform-commons": {
-            "locked": "1.7.2",
+            "locked": "1.10.2",
             "transitive": [
                 "org.junit.jupiter:junit-jupiter-api",
                 "org.junit.platform:junit-platform-engine"
             ]
         },
         "org.junit.platform:junit-platform-engine": {
-            "locked": "1.7.2",
+            "locked": "1.10.2",
             "transitive": [
                 "org.junit.jupiter:junit-jupiter-engine",
                 "org.junit.platform:junit-platform-launcher",
@@ -1952,7 +1999,7 @@
             ]
         },
         "org.junit.platform:junit-platform-launcher": {
-            "locked": "1.7.2",
+            "locked": "1.10.2",
             "transitive": [
                 "org.codehaus.groovy:groovy-test-junit5"
             ]
@@ -1967,7 +2014,7 @@
             "locked": "1.35"
         },
         "org.opentest4j:opentest4j": {
-            "locked": "1.2.0",
+            "locked": "1.3.0",
             "transitive": [
                 "org.junit.jupiter:junit-jupiter-api",
                 "org.junit.platform:junit-platform-engine"
@@ -2004,7 +2051,7 @@
             "locked": "2.0-groovy-3.0"
         },
         "org.testng:testng": {
-            "locked": "7.4.0",
+            "locked": "7.5.1",
             "transitive": [
                 "org.codehaus.groovy:groovy-testng",
                 "org.reactivestreams:reactive-streams-tck"
