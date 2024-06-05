@@ -633,7 +633,7 @@ public class AstPrinter {
 
     private <T extends Node> String block(List<T> nodes) {
         if (isEmpty(nodes)) {
-            return "{}";
+            return "";
         }
         if (compactMode) {
             String joinedNodes = joinTight(nodes, " ", "", "");
