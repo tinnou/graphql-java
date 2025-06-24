@@ -1,0 +1,5 @@
+app-type: java-project
+name: graphql-java-fork
+org: STE
+tool-versions:
+  jdk: 1.8
