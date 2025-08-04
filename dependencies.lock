@@ -76,7 +76,7 @@
             ]
         },
         "com.graphql-java:java-dataloader": {
-            "locked": "3.3.0"
+            "locked": "5.0.2"
         },
         "com.ibm.icu:icu4j": {
             "locked": "71.1",
@@ -124,14 +124,26 @@
                 "org.antlr:antlr4"
             ]
         },
+        "org.jetbrains.kotlin:kotlin-stdlib": {
+            "locked": "2.2.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
+        },
         "org.jetbrains:annotations": {
-            "locked": "24.1.0"
+            "locked": "13.0",
+            "transitive": [
+                "org.jetbrains.kotlin:kotlin-stdlib"
+            ]
+        },
+        "org.jspecify:jspecify": {
+            "locked": "1.0.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
         },
         "org.reactivestreams:reactive-streams": {
-            "locked": "1.0.3"
-        },
-        "org.slf4j:slf4j-api": {
-            "locked": "1.7.30",
+            "locked": "1.0.3",
             "transitive": [
                 "com.graphql-java:java-dataloader"
             ]
@@ -220,7 +232,7 @@
             ]
         },
         "com.graphql-java:java-dataloader": {
-            "locked": "3.3.0"
+            "locked": "5.0.2"
         },
         "com.ibm.icu:icu4j": {
             "locked": "71.1",
@@ -280,8 +292,23 @@
                 "org.antlr:antlr4"
             ]
         },
+        "org.jetbrains.kotlin:kotlin-stdlib": {
+            "locked": "2.2.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
+        },
         "org.jetbrains:annotations": {
-            "locked": "24.1.0"
+            "locked": "13.0",
+            "transitive": [
+                "org.jetbrains.kotlin:kotlin-stdlib"
+            ]
+        },
+        "org.jspecify:jspecify": {
+            "locked": "1.0.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
         },
         "org.openjdk.jmh:jmh-core": {
             "locked": "1.37",
@@ -318,10 +345,7 @@
             ]
         },
         "org.reactivestreams:reactive-streams": {
-            "locked": "1.0.3"
-        },
-        "org.slf4j:slf4j-api": {
-            "locked": "1.7.30",
+            "locked": "1.0.3",
             "transitive": [
                 "com.graphql-java:java-dataloader"
             ]
@@ -329,31 +353,25 @@
     },
     "jmhRuntimeClasspath": {
         "com.atomicjar:testcontainers-cloud-provider-strategy": {
-            "locked": "0.0.36",
+            "locked": "0.0.43",
             "transitive": [
                 "com.netflix.nebula.testcontainers:testcontainers-cloud-configurer"
             ]
         },
-        "com.beust:jcommander": {
-            "locked": "1.82",
-            "transitive": [
-                "org.testng:testng"
-            ]
-        },
         "com.fasterxml.jackson.core:jackson-annotations": {
-            "locked": "2.17.2",
+            "locked": "2.18.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-core": {
-            "locked": "2.17.2",
+            "locked": "2.18.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-databind": {
-            "locked": "2.17.2"
+            "locked": "2.18.3"
         },
         "com.github.javafaker:javafaker": {
             "locked": "1.0.2"
@@ -371,10 +389,10 @@
             ]
         },
         "com.google.code.gson:gson": {
-            "locked": "2.11.0"
+            "locked": "2.12.1"
         },
         "com.google.errorprone:error_prone_annotations": {
-            "locked": "2.27.0",
+            "locked": "2.36.0",
             "transitive": [
                 "com.google.code.gson:gson",
                 "com.google.guava:guava"
@@ -402,13 +420,13 @@
             ]
         },
         "com.gradle:develocity-testing-annotations": {
-            "locked": "2.0"
+            "locked": "2.0.1"
         },
         "com.gradle:gradle-enterprise-testing-annotations": {
             "locked": "1.0"
         },
         "com.graphql-java:java-dataloader": {
-            "locked": "3.3.0"
+            "locked": "5.0.2"
         },
         "com.ibm.icu:icu4j": {
             "locked": "71.1",
@@ -417,7 +435,36 @@
             ]
         },
         "com.netflix.nebula.testcontainers:testcontainers-cloud-configurer": {
-            "locked": "1.11.0"
+            "locked": "1.18.0"
+        },
+        "com.tngtech.archunit:archunit": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5-api",
+                "com.tngtech.archunit:archunit-junit5-engine"
+            ]
+        },
+        "com.tngtech.archunit:archunit-junit5": {
+            "locked": "1.2.0"
+        },
+        "com.tngtech.archunit:archunit-junit5-api": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5",
+                "com.tngtech.archunit:archunit-junit5-engine"
+            ]
+        },
+        "com.tngtech.archunit:archunit-junit5-engine": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5"
+            ]
+        },
+        "com.tngtech.archunit:archunit-junit5-engine-api": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5-engine"
+            ]
         },
         "dk.brics.automaton:automaton": {
             "locked": "1.11-8",
@@ -426,13 +473,16 @@
             ]
         },
         "io.projectreactor:reactor-core": {
-            "locked": "3.6.8"
+            "locked": "3.7.4"
         },
         "io.reactivex.rxjava2:rxjava": {
             "locked": "2.2.21"
         },
         "junit:junit": {
             "locked": "4.13.2"
+        },
+        "net.bytebuddy:byte-buddy": {
+            "locked": "1.17.5"
         },
         "net.sf.jopt-simple:jopt-simple": {
             "locked": "5.0.4",
@@ -480,6 +530,17 @@
                 "org.openjdk.jmh:jmh-core"
             ]
         },
+        "org.apache.groovy:groovy": {
+            "locked": "4.0.26",
+            "transitive": [
+                "org.apache.groovy:groovy-json",
+                "org.awaitility:awaitility-groovy",
+                "org.spockframework:spock-core"
+            ]
+        },
+        "org.apache.groovy:groovy-json": {
+            "locked": "4.0.26"
+        },
         "org.apiguardian:apiguardian-api": {
             "locked": "1.1.2",
             "transitive": [
@@ -489,30 +550,19 @@
             ]
         },
         "org.awaitility:awaitility": {
-            "locked": "4.2.0",
+            "locked": "4.3.0",
             "transitive": [
                 "org.awaitility:awaitility-groovy"
             ]
         },
         "org.awaitility:awaitility-groovy": {
-            "locked": "4.2.0"
+            "locked": "4.3.0"
         },
         "org.checkerframework:checker-qual": {
             "locked": "3.33.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
-        },
-        "org.codehaus.groovy:groovy": {
-            "locked": "3.0.22",
-            "transitive": [
-                "org.awaitility:awaitility-groovy",
-                "org.codehaus.groovy:groovy-json",
-                "org.spockframework:spock-core"
-            ]
-        },
-        "org.codehaus.groovy:groovy-json": {
-            "locked": "3.0.22"
         },
         "org.eclipse.jetty.toolchain:jetty-jakarta-servlet-api": {
             "locked": "5.0.2",
@@ -521,23 +571,23 @@
             ]
         },
         "org.eclipse.jetty:jetty-http": {
-            "locked": "11.0.22",
+            "locked": "11.0.25",
             "transitive": [
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-io": {
-            "locked": "11.0.22",
+            "locked": "11.0.25",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-server": {
-            "locked": "11.0.22"
+            "locked": "11.0.25"
         },
         "org.eclipse.jetty:jetty-util": {
-            "locked": "11.0.22",
+            "locked": "11.0.25",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-io"
@@ -562,21 +612,49 @@
                 "junit:junit"
             ]
         },
+        "org.jcommander:jcommander": {
+            "locked": "1.83",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        },
+        "org.jetbrains.kotlin:kotlin-stdlib": {
+            "locked": "2.2.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
+        },
+        "org.jetbrains:annotations": {
+            "locked": "13.0",
+            "transitive": [
+                "org.jetbrains.kotlin:kotlin-stdlib"
+            ]
+        },
+        "org.jspecify:jspecify": {
+            "locked": "1.0.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
+        },
         "org.junit.platform:junit-platform-commons": {
-            "locked": "1.10.2",
+            "locked": "1.13.3",
             "transitive": [
                 "org.junit.platform:junit-platform-engine"
             ]
         },
         "org.junit.platform:junit-platform-engine": {
-            "locked": "1.10.2",
+            "locked": "1.13.3",
             "transitive": [
+                "com.tngtech.archunit:archunit-junit5-engine-api",
                 "org.junit.platform:junit-platform-launcher",
                 "org.spockframework:spock-core"
             ]
         },
         "org.junit.platform:junit-platform-launcher": {
-            "locked": "1.10.2"
+            "locked": "1.13.3"
+        },
+        "org.objenesis:objenesis": {
+            "locked": "3.4"
         },
         "org.openjdk.jmh:jmh-core": {
             "locked": "1.37",
@@ -621,6 +699,7 @@
         "org.reactivestreams:reactive-streams": {
             "locked": "1.0.4",
             "transitive": [
+                "com.graphql-java:java-dataloader",
                 "io.projectreactor:reactor-core",
                 "io.reactivex.rxjava2:rxjava",
                 "org.reactivestreams:reactive-streams-examples",
@@ -637,9 +716,9 @@
             "locked": "1.0.3"
         },
         "org.slf4j:slf4j-api": {
-            "locked": "2.0.9",
+            "locked": "2.0.16",
             "transitive": [
-                "com.graphql-java:java-dataloader",
+                "com.tngtech.archunit:archunit",
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-io",
                 "org.eclipse.jetty:jetty-server",
@@ -648,10 +727,10 @@
             ]
         },
         "org.spockframework:spock-core": {
-            "locked": "2.0-groovy-3.0"
+            "locked": "2.3-groovy-4.0"
         },
         "org.testng:testng": {
-            "locked": "7.10.2",
+            "locked": "7.11.0",
             "transitive": [
                 "org.reactivestreams:reactive-streams-tck"
             ]
@@ -674,7 +753,7 @@
             "locked": "0.82.0"
         },
         "netflix.nebula.resolutionrules:resolution-rules": {
-            "locked": "1.310.0"
+            "locked": "1.360.0"
         }
     },
     "runtimeClasspath": {
@@ -712,7 +791,7 @@
             ]
         },
         "com.graphql-java:java-dataloader": {
-            "locked": "3.3.0"
+            "locked": "5.0.2"
         },
         "com.ibm.icu:icu4j": {
             "locked": "71.1",
@@ -760,11 +839,26 @@
                 "org.antlr:antlr4"
             ]
         },
-        "org.reactivestreams:reactive-streams": {
-            "locked": "1.0.3"
+        "org.jetbrains.kotlin:kotlin-stdlib": {
+            "locked": "2.2.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
         },
-        "org.slf4j:slf4j-api": {
-            "locked": "1.7.30",
+        "org.jetbrains:annotations": {
+            "locked": "13.0",
+            "transitive": [
+                "org.jetbrains.kotlin:kotlin-stdlib"
+            ]
+        },
+        "org.jspecify:jspecify": {
+            "locked": "1.0.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
+        },
+        "org.reactivestreams:reactive-streams": {
+            "locked": "1.0.3",
             "transitive": [
                 "com.graphql-java:java-dataloader"
             ]
@@ -794,26 +888,20 @@
         }
     },
     "testCompileClasspath": {
-        "com.beust:jcommander": {
-            "locked": "1.82",
-            "transitive": [
-                "org.testng:testng"
-            ]
-        },
         "com.fasterxml.jackson.core:jackson-annotations": {
-            "locked": "2.17.2",
+            "locked": "2.18.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-core": {
-            "locked": "2.17.2",
+            "locked": "2.18.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-databind": {
-            "locked": "2.17.2"
+            "locked": "2.18.3"
         },
         "com.github.javafaker:javafaker": {
             "locked": "1.0.2"
@@ -831,10 +919,10 @@
             ]
         },
         "com.google.code.gson:gson": {
-            "locked": "2.11.0"
+            "locked": "2.12.1"
         },
         "com.google.errorprone:error_prone_annotations": {
-            "locked": "2.27.0",
+            "locked": "2.36.0",
             "transitive": [
                 "com.google.code.gson:gson",
                 "com.google.guava:guava"
@@ -862,18 +950,33 @@
             ]
         },
         "com.gradle:develocity-testing-annotations": {
-            "locked": "2.0"
+            "locked": "2.0.1"
         },
         "com.gradle:gradle-enterprise-testing-annotations": {
             "locked": "1.0"
         },
         "com.graphql-java:java-dataloader": {
-            "locked": "3.3.0"
+            "locked": "5.0.2"
         },
         "com.ibm.icu:icu4j": {
             "locked": "71.1",
             "transitive": [
                 "org.antlr:antlr4"
+            ]
+        },
+        "com.tngtech.archunit:archunit": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5-api"
+            ]
+        },
+        "com.tngtech.archunit:archunit-junit5": {
+            "locked": "1.2.0"
+        },
+        "com.tngtech.archunit:archunit-junit5-api": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5"
             ]
         },
         "dk.brics.automaton:automaton": {
@@ -883,13 +986,16 @@
             ]
         },
         "io.projectreactor:reactor-core": {
-            "locked": "3.6.8"
+            "locked": "3.7.4"
         },
         "io.reactivex.rxjava2:rxjava": {
             "locked": "2.2.21"
         },
         "junit:junit": {
             "locked": "4.13.2"
+        },
+        "net.bytebuddy:byte-buddy": {
+            "locked": "1.17.5"
         },
         "net.sf.jopt-simple:jopt-simple": {
             "locked": "5.0.4",
@@ -937,6 +1043,17 @@
                 "org.openjdk.jmh:jmh-core"
             ]
         },
+        "org.apache.groovy:groovy": {
+            "locked": "4.0.26",
+            "transitive": [
+                "org.apache.groovy:groovy-json",
+                "org.awaitility:awaitility-groovy",
+                "org.spockframework:spock-core"
+            ]
+        },
+        "org.apache.groovy:groovy-json": {
+            "locked": "4.0.26"
+        },
         "org.apiguardian:apiguardian-api": {
             "locked": "1.1.2",
             "transitive": [
@@ -945,30 +1062,19 @@
             ]
         },
         "org.awaitility:awaitility": {
-            "locked": "4.2.0",
+            "locked": "4.3.0",
             "transitive": [
                 "org.awaitility:awaitility-groovy"
             ]
         },
         "org.awaitility:awaitility-groovy": {
-            "locked": "4.2.0"
+            "locked": "4.3.0"
         },
         "org.checkerframework:checker-qual": {
             "locked": "3.33.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
-        },
-        "org.codehaus.groovy:groovy": {
-            "locked": "3.0.22",
-            "transitive": [
-                "org.awaitility:awaitility-groovy",
-                "org.codehaus.groovy:groovy-json",
-                "org.spockframework:spock-core"
-            ]
-        },
-        "org.codehaus.groovy:groovy-json": {
-            "locked": "3.0.22"
         },
         "org.eclipse.jetty.toolchain:jetty-jakarta-servlet-api": {
             "locked": "5.0.2",
@@ -977,23 +1083,23 @@
             ]
         },
         "org.eclipse.jetty:jetty-http": {
-            "locked": "11.0.22",
+            "locked": "11.0.25",
             "transitive": [
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-io": {
-            "locked": "11.0.22",
+            "locked": "11.0.25",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-server": {
-            "locked": "11.0.22"
+            "locked": "11.0.25"
         },
         "org.eclipse.jetty:jetty-util": {
-            "locked": "11.0.22",
+            "locked": "11.0.25",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-io"
@@ -1018,17 +1124,44 @@
                 "junit:junit"
             ]
         },
+        "org.jcommander:jcommander": {
+            "locked": "1.83",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        },
+        "org.jetbrains.kotlin:kotlin-stdlib": {
+            "locked": "2.2.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
+        },
+        "org.jetbrains:annotations": {
+            "locked": "13.0",
+            "transitive": [
+                "org.jetbrains.kotlin:kotlin-stdlib"
+            ]
+        },
+        "org.jspecify:jspecify": {
+            "locked": "1.0.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
+        },
         "org.junit.platform:junit-platform-commons": {
-            "locked": "1.10.2",
+            "locked": "1.13.3",
             "transitive": [
                 "org.junit.platform:junit-platform-engine"
             ]
         },
         "org.junit.platform:junit-platform-engine": {
-            "locked": "1.10.2",
+            "locked": "1.13.3",
             "transitive": [
                 "org.spockframework:spock-core"
             ]
+        },
+        "org.objenesis:objenesis": {
+            "locked": "3.4"
         },
         "org.openjdk.jmh:jmh-core": {
             "locked": "1.37"
@@ -1042,6 +1175,7 @@
         "org.reactivestreams:reactive-streams": {
             "locked": "1.0.4",
             "transitive": [
+                "com.graphql-java:java-dataloader",
                 "io.projectreactor:reactor-core",
                 "io.reactivex.rxjava2:rxjava",
                 "org.reactivestreams:reactive-streams-examples",
@@ -1058,9 +1192,9 @@
             "locked": "1.0.3"
         },
         "org.slf4j:slf4j-api": {
-            "locked": "2.0.9",
+            "locked": "2.0.16",
             "transitive": [
-                "com.graphql-java:java-dataloader",
+                "com.tngtech.archunit:archunit",
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-io",
                 "org.eclipse.jetty:jetty-server",
@@ -1069,10 +1203,10 @@
             ]
         },
         "org.spockframework:spock-core": {
-            "locked": "2.0-groovy-3.0"
+            "locked": "2.3-groovy-4.0"
         },
         "org.testng:testng": {
-            "locked": "7.10.2",
+            "locked": "7.11.0",
             "transitive": [
                 "org.reactivestreams:reactive-streams-tck"
             ]
@@ -1086,31 +1220,25 @@
     },
     "testRuntimeClasspath": {
         "com.atomicjar:testcontainers-cloud-provider-strategy": {
-            "locked": "0.0.36",
+            "locked": "0.0.43",
             "transitive": [
                 "com.netflix.nebula.testcontainers:testcontainers-cloud-configurer"
             ]
         },
-        "com.beust:jcommander": {
-            "locked": "1.82",
-            "transitive": [
-                "org.testng:testng"
-            ]
-        },
         "com.fasterxml.jackson.core:jackson-annotations": {
-            "locked": "2.17.2",
+            "locked": "2.18.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-core": {
-            "locked": "2.17.2",
+            "locked": "2.18.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-databind": {
-            "locked": "2.17.2"
+            "locked": "2.18.3"
         },
         "com.github.javafaker:javafaker": {
             "locked": "1.0.2"
@@ -1128,10 +1256,10 @@
             ]
         },
         "com.google.code.gson:gson": {
-            "locked": "2.11.0"
+            "locked": "2.12.1"
         },
         "com.google.errorprone:error_prone_annotations": {
-            "locked": "2.27.0",
+            "locked": "2.36.0",
             "transitive": [
                 "com.google.code.gson:gson",
                 "com.google.guava:guava"
@@ -1159,13 +1287,13 @@
             ]
         },
         "com.gradle:develocity-testing-annotations": {
-            "locked": "2.0"
+            "locked": "2.0.1"
         },
         "com.gradle:gradle-enterprise-testing-annotations": {
             "locked": "1.0"
         },
         "com.graphql-java:java-dataloader": {
-            "locked": "3.3.0"
+            "locked": "5.0.2"
         },
         "com.ibm.icu:icu4j": {
             "locked": "71.1",
@@ -1174,7 +1302,36 @@
             ]
         },
         "com.netflix.nebula.testcontainers:testcontainers-cloud-configurer": {
-            "locked": "1.11.0"
+            "locked": "1.18.0"
+        },
+        "com.tngtech.archunit:archunit": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5-api",
+                "com.tngtech.archunit:archunit-junit5-engine"
+            ]
+        },
+        "com.tngtech.archunit:archunit-junit5": {
+            "locked": "1.2.0"
+        },
+        "com.tngtech.archunit:archunit-junit5-api": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5",
+                "com.tngtech.archunit:archunit-junit5-engine"
+            ]
+        },
+        "com.tngtech.archunit:archunit-junit5-engine": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5"
+            ]
+        },
+        "com.tngtech.archunit:archunit-junit5-engine-api": {
+            "locked": "1.2.0",
+            "transitive": [
+                "com.tngtech.archunit:archunit-junit5-engine"
+            ]
         },
         "dk.brics.automaton:automaton": {
             "locked": "1.11-8",
@@ -1183,13 +1340,16 @@
             ]
         },
         "io.projectreactor:reactor-core": {
-            "locked": "3.6.8"
+            "locked": "3.7.4"
         },
         "io.reactivex.rxjava2:rxjava": {
             "locked": "2.2.21"
         },
         "junit:junit": {
             "locked": "4.13.2"
+        },
+        "net.bytebuddy:byte-buddy": {
+            "locked": "1.17.5"
         },
         "net.sf.jopt-simple:jopt-simple": {
             "locked": "5.0.4",
@@ -1237,6 +1397,17 @@
                 "org.openjdk.jmh:jmh-core"
             ]
         },
+        "org.apache.groovy:groovy": {
+            "locked": "4.0.26",
+            "transitive": [
+                "org.apache.groovy:groovy-json",
+                "org.awaitility:awaitility-groovy",
+                "org.spockframework:spock-core"
+            ]
+        },
+        "org.apache.groovy:groovy-json": {
+            "locked": "4.0.26"
+        },
         "org.apiguardian:apiguardian-api": {
             "locked": "1.1.2",
             "transitive": [
@@ -1246,30 +1417,19 @@
             ]
         },
         "org.awaitility:awaitility": {
-            "locked": "4.2.0",
+            "locked": "4.3.0",
             "transitive": [
                 "org.awaitility:awaitility-groovy"
             ]
         },
         "org.awaitility:awaitility-groovy": {
-            "locked": "4.2.0"
+            "locked": "4.3.0"
         },
         "org.checkerframework:checker-qual": {
             "locked": "3.33.0",
             "transitive": [
                 "com.google.guava:guava"
             ]
-        },
-        "org.codehaus.groovy:groovy": {
-            "locked": "3.0.22",
-            "transitive": [
-                "org.awaitility:awaitility-groovy",
-                "org.codehaus.groovy:groovy-json",
-                "org.spockframework:spock-core"
-            ]
-        },
-        "org.codehaus.groovy:groovy-json": {
-            "locked": "3.0.22"
         },
         "org.eclipse.jetty.toolchain:jetty-jakarta-servlet-api": {
             "locked": "5.0.2",
@@ -1278,23 +1438,23 @@
             ]
         },
         "org.eclipse.jetty:jetty-http": {
-            "locked": "11.0.22",
+            "locked": "11.0.25",
             "transitive": [
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-io": {
-            "locked": "11.0.22",
+            "locked": "11.0.25",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-server": {
-            "locked": "11.0.22"
+            "locked": "11.0.25"
         },
         "org.eclipse.jetty:jetty-util": {
-            "locked": "11.0.22",
+            "locked": "11.0.25",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-io"
@@ -1319,21 +1479,49 @@
                 "junit:junit"
             ]
         },
+        "org.jcommander:jcommander": {
+            "locked": "1.83",
+            "transitive": [
+                "org.testng:testng"
+            ]
+        },
+        "org.jetbrains.kotlin:kotlin-stdlib": {
+            "locked": "2.2.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
+        },
+        "org.jetbrains:annotations": {
+            "locked": "13.0",
+            "transitive": [
+                "org.jetbrains.kotlin:kotlin-stdlib"
+            ]
+        },
+        "org.jspecify:jspecify": {
+            "locked": "1.0.0",
+            "transitive": [
+                "com.graphql-java:java-dataloader"
+            ]
+        },
         "org.junit.platform:junit-platform-commons": {
-            "locked": "1.10.2",
+            "locked": "1.13.3",
             "transitive": [
                 "org.junit.platform:junit-platform-engine"
             ]
         },
         "org.junit.platform:junit-platform-engine": {
-            "locked": "1.10.2",
+            "locked": "1.13.3",
             "transitive": [
+                "com.tngtech.archunit:archunit-junit5-engine-api",
                 "org.junit.platform:junit-platform-launcher",
                 "org.spockframework:spock-core"
             ]
         },
         "org.junit.platform:junit-platform-launcher": {
-            "locked": "1.10.2"
+            "locked": "1.13.3"
+        },
+        "org.objenesis:objenesis": {
+            "locked": "3.4"
         },
         "org.openjdk.jmh:jmh-core": {
             "locked": "1.37"
@@ -1347,6 +1535,7 @@
         "org.reactivestreams:reactive-streams": {
             "locked": "1.0.4",
             "transitive": [
+                "com.graphql-java:java-dataloader",
                 "io.projectreactor:reactor-core",
                 "io.reactivex.rxjava2:rxjava",
                 "org.reactivestreams:reactive-streams-examples",
@@ -1363,9 +1552,9 @@
             "locked": "1.0.3"
         },
         "org.slf4j:slf4j-api": {
-            "locked": "2.0.9",
+            "locked": "2.0.16",
             "transitive": [
-                "com.graphql-java:java-dataloader",
+                "com.tngtech.archunit:archunit",
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-io",
                 "org.eclipse.jetty:jetty-server",
@@ -1374,10 +1563,10 @@
             ]
         },
         "org.spockframework:spock-core": {
-            "locked": "2.0-groovy-3.0"
+            "locked": "2.3-groovy-4.0"
         },
         "org.testng:testng": {
-            "locked": "7.10.2",
+            "locked": "7.11.0",
             "transitive": [
                 "org.reactivestreams:reactive-streams-tck"
             ]

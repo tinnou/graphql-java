@@ -7,16 +7,16 @@ plugins {
     id "com.gradleup.shadow" version "8.3.6" apply false
 }
 
-apply plugin: 'groovy'
 apply plugin: 'netflix.nebula'
 apply plugin: 'nebula.release'
 apply plugin: 'java'
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'antlr'
-apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.gradleup.shadow'
 apply plugin: 'biz.aQute.bnd.builder'
 apply plugin: 'me.champeau.jmh'
+apply plugin: 'groovy'
 
 java {
     toolchain {
